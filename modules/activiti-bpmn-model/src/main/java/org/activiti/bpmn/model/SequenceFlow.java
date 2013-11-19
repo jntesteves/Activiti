@@ -22,6 +22,7 @@ public class SequenceFlow extends FlowElement {
   protected String conditionExpression;
   protected String sourceRef;
   protected String targetRef;
+  protected String probability;
 
   public String getConditionExpression() {
     return conditionExpression;
@@ -45,6 +46,14 @@ public class SequenceFlow extends FlowElement {
     return sourceRef + " --> " + targetRef;
   }
   
+  public String getProbability() {
+	return probability;
+  }
+  
+  public void setProbability(String probability) {
+	this.probability = probability;
+  }
+  
   public SequenceFlow clone() {
     SequenceFlow clone = new SequenceFlow();
     clone.setValues(this);
@@ -56,5 +65,6 @@ public class SequenceFlow extends FlowElement {
     setConditionExpression(otherFlow.getConditionExpression());
     setSourceRef(otherFlow.getSourceRef());
     setTargetRef(otherFlow.getTargetRef());
+    setProbability(otherFlow.getProbability());
   }
 }

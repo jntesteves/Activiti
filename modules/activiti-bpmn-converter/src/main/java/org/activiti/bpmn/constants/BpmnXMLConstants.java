@@ -156,6 +156,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";
   public static final String ATTRIBUTE_TASK_USER_CATEGORY = "category";
   public static final String ATTRIBUTE_TASK_USER_PRIORITY = "priority";
+  public static final String ATTRIBUTE_TASK_USER_ESTIMATED_DURATION = "estimatedDuration";
   
   public static final String ATTRIBUTE_TASK_RULE_VARIABLES_INPUT = "ruleVariablesInput";
   public static final String ATTRIBUTE_TASK_RULE_RESULT_VARIABLE = "resultVariable";
@@ -174,6 +175,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FLOW_CONDITION = "conditionExpression";
   public static final String ATTRIBUTE_FLOW_SOURCE_REF = "sourceRef";
   public static final String ATTRIBUTE_FLOW_TARGET_REF = "targetRef";
+  public static final String ATTRIBUTE_FLOW_PROBABILITY = "probability";
   
   public static final String ELEMENT_TEXT_ANNOTATION = "textAnnotation";
   public static final String ATTRIBUTE_TEXTFORMAT = "textFormat";
@@ -212,6 +214,14 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_EVENT_COMPENSATEDEFINITION = "compensateEventDefinition";
   public static final String ATTRIBUTE_COMPENSATE_ACTIVITYREF = "activityRef";
   public static final String ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION = "waitForCompletion";
+  
+  public static final String ELEMENT_USERTASK_RESOURCE = "usertaskresource";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_ID = "resource_id";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_AMOUNT = "amount";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_DAILY_TIME = "daily_time";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_CURRENCY = "currency";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_COST = "cost";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_TIME_UNIT = "time_unit";
   
   public static final String ELEMENT_FORMPROPERTY = "formProperty";
   public static final String ATTRIBUTE_FORM_ID = "id";

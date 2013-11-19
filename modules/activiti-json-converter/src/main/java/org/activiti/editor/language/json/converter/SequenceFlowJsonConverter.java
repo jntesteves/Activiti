@@ -94,6 +94,10 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
       propertiesNode.put(PROPERTY_SEQUENCEFLOW_CONDITION, sequenceFlow.getConditionExpression());
     }
+
+    if (StringUtils.isNotEmpty(sequenceFlow.getProbability())) {
+        propertiesNode.put(PROPERTY_SEQUENCEFLOW_PROBABILITY, sequenceFlow.getProbability());
+    }
     
     flowNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     
@@ -118,6 +122,7 @@ public class SequenceFlowJsonConverter extends BaseBpmnJsonConverter {
     }
     
     flow.setConditionExpression(getPropertyValueAsString(PROPERTY_SEQUENCEFLOW_CONDITION, elementNode));
+    flow.setProbability(getPropertyValueAsString(PROPERTY_SEQUENCEFLOW_PROBABILITY, elementNode));
     
     return flow;
   }

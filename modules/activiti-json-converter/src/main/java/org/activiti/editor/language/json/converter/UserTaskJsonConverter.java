@@ -88,17 +88,22 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     if (userTask.getPriority() != null) {
       setPropertyValue(PROPERTY_PRIORITY, userTask.getPriority().toString(), propertiesNode);
     }
+    if (userTask.getEstimatedDuration() != null) {
+        setPropertyValue(PROPERTY_ESTIMATED_DURATION, userTask.getEstimatedDuration(), propertiesNode);
+    }
     setPropertyValue(PROPERTY_FORMKEY, userTask.getFormKey(), propertiesNode);
     setPropertyValue(PROPERTY_DUEDATE, userTask.getDueDate(), propertiesNode);
     setPropertyValue(PROPERTY_CATEGORY, userTask.getCategory(), propertiesNode);;
     
     addFormProperties(userTask.getFormProperties(), propertiesNode);
+    addResources(userTask.getResources(), propertiesNode);
   }
   
   @Override
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     UserTask task = new UserTask();
     task.setPriority(getPropertyValueAsString(PROPERTY_PRIORITY, elementNode));
+    task.setEstimatedDuration(getPropertyValueAsString(PROPERTY_ESTIMATED_DURATION, elementNode));
     task.setFormKey(getPropertyValueAsString(PROPERTY_FORMKEY, elementNode));
     task.setDueDate(getPropertyValueAsString(PROPERTY_DUEDATE, elementNode));
     task.setCategory(getPropertyValueAsString(PROPERTY_CATEGORY, elementNode));
@@ -126,6 +131,7 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
       }
     }
     convertJsonToFormProperties(elementNode, task);
+    convertJsonToResources(elementNode, task);
     return task;
   }
 }

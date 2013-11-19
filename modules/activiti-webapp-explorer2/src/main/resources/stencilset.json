@@ -98,17 +98,133 @@
       "type" : "String",
       "title" : "Priority",
       "value" : "",
-      "description" : "Priority of the user task.",
+      "description" : "Priority of the user task. @",
+      "popular" : true
+    }, {
+      "id" : "estimatedduration",
+      "type" : "String",
+      "title" : "Estimated Duration",
+      "value" : "",
+      "description" : "Estimated Duration of the user task (Used for simulation - Use ISO8601 Format).",
       "popular" : true
     } ]
-  }, {
+  }, 
+  {
+    "name" : "usertaskresource",
+    "properties" : [ {
+                      "id" : "usertaskresource",
+                      "type" : "Complex",
+                      "title" : "Resources",
+                      "value" : "",
+                      "description" : "Resource definition for the user task",
+                      "popular" : true,
+                      "complexItems" : [ {                      
+                                            "id" : "resource_id",
+                                            "name" : "Resource ID",
+                                            "name_de" : "Resource ID",
+                                            "type" : "String",
+                                            "description" : "This defines a ID to resource.",
+                                            "description_de" : "This defines a ID to resource.",
+                                            "value" : "",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "amount",
+                                            "name" : "Amount",
+                                            "name_de" : "Amount",
+                                            "type" : "String",
+                                            "description" : "This defines the amount of available resources.",
+                                            "description_de" : "This defines the amount of available resources.",
+                                            "value" : "1.0",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "daily_time",
+                                            "name" : "Daily Time",
+                                            "name_de" : "Daily Time",
+                                            "type" : "String",
+                                            "description" : "This defines the working day hours of resource (Use ISO8601 Format).",
+                                            "description_de" : "This defines the working day hours of resource (Use ISO8601 Format).",
+                                            "value" : "PT8H",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "currency",
+                                            "name" : "Currency",
+                                            "name_de" : "Currency",
+                                            "type" : "String",
+                                            "description" : "This defines the currency sign.",
+                                            "description_de" : "This defines the currency sign.",
+                                            "value" : "R$",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "cost",
+                                            "name" : "Cost per time unit",
+                                            "name_de" : "Cost per time unit",
+                                            "type" : "String",
+                                            "description" : "This defines a resource cost per unit time.",
+                                            "description_de" : "This defines a resource cost per unit time.",
+                                            "value" : "",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "time_unit",
+                                            "name" : "Time Unit",
+                                            "name_de" : "Time Unit",
+                                            "type" : "Choice",
+                                            "value" : "",
+                                            "width" : 100,
+                                            "optional" : false,
+                                            "items" : [ {
+                                                          "id" : "tu_minute",
+                                                          "title" : "Minute",
+                                                          "title_de" : "Minute",
+                                                          "value" : "minute",
+                                                          "refToView" : ""
+                                                        }, {
+                                                          "id" : "tu_hour",
+                                                          "title" : "Hour",
+                                                          "title_de" : "Hour",
+                                                          "value" : "hour",
+                                                          "refToView" : ""
+                                                        }, {
+                                                          "id" : "tu_day",
+                                                          "title" : "Day",
+                                                          "title_de" : "Day",
+                                                          "value" : "day",
+                                                          "refToView" : ""
+                                                        }, {
+                                                          "id" : "tu_mounth",
+                                                          "title" : "Mounth",
+                                                          "title_de" : "Mounth",
+                                                          "value" : "mounth",
+                                                          "refToView" : ""
+                                                        }, {
+                                                          "id" : "tu_utilization",
+                                                          "title" : "Utilization",
+                                                          "title_de" : "Utilization",
+                                                          "value" : "utilization",
+                                                          "refToView" : ""
+                                                        } ]
+                                          }
+                                        ]
+                      } 
+                    ]
+  },  
+  {
     "name" : "usertaskassignment",
     "properties" : [ {
       "id" : "usertaskassignment",
       "type" : "Complex",
       "title" : "Assignments",
       "value" : "",
-      "description" : "Assignment definition for the user task",
+      "description" : "Assignment definition for the user task @",
       "popular" : true,
       "complexItems" : [ {
         "id" : "assignment_type",
@@ -702,6 +818,13 @@
         "icon" : "connector/list/type.expression.png",
         "refToView" : "conditional"
       } ]
+    }, {
+      "id" : "probability",
+      "type" : "String",
+      "title" : "Probability (Used on simulation) %",
+      "value" : "",
+      "description" : "Probability of condition (Used for simulation - Type a integer number between 1 and 100).",
+      "popular" : true
     } ]
   }, {
     "name" : "cancelactivityattribute",
@@ -1104,7 +1227,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskresource", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",

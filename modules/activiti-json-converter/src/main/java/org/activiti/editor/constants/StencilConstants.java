@@ -125,7 +125,16 @@ public interface StencilConstants {
 	final String PROPERTY_DUEDATE = "duedatedefinition";
 	final String PROPERTY_CATEGORY = "categoryDefinition";
 	final String PROPERTY_PRIORITY = "prioritydefinition";
+	final String PROPERTY_ESTIMATED_DURATION = "estimatedduration";
 	
+	final String PROPERTY_USERTASK_RESOURCE = "usertaskresource";
+	final String PROPERTY_USERTASK_RESOURCE_ID = "resource_id";
+	final String PROPERTY_USERTASK_RESOURCE_AMOUNT = "amount";
+	final String PROPERTY_USERTASK_RESOURCE_DAILY_TIME = "daily_time";
+	final String PROPERTY_USERTASK_RESOURCE_CURRENCY = "currency";
+	final String PROPERTY_USERTASK_RESOURCE_COST = "cost";
+	final String PROPERTY_USERTASK_RESOURCE_TIME_UNIT = "time_unit";
+
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";
@@ -181,4 +190,5 @@ public interface StencilConstants {
   final String PROPERTY_IOPARAMETER_TARGET = "ioparameter_target";
 	
 	final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
+	final String PROPERTY_SEQUENCEFLOW_PROBABILITY = "probability";
 }

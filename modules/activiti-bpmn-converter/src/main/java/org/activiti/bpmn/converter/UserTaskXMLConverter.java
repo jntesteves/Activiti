@@ -90,6 +90,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     userTask.setAssignee(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ASSIGNEE)); 
     userTask.setOwner(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_OWNER));
     userTask.setPriority(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY));
+    userTask.setEstimatedDuration(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_ESTIMATED_DURATION));
     
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS))) {
       String expression = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS);
@@ -121,6 +122,9 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     if (userTask.getPriority() != null) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
     }
+
+    writeQualifiedAttribute(ATTRIBUTE_TASK_USER_ESTIMATED_DURATION, userTask.getEstimatedDuration(), xtw);
+
     // write custom attributes
     BpmnXMLUtil.writeAttribute(userTask.getAttributes().values(), xtw, defaultAttributes);
   }
@@ -129,6 +133,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
     writeFormProperties(userTask, xtw);
+    writeResources(userTask, xtw);
   }
 
   @Override

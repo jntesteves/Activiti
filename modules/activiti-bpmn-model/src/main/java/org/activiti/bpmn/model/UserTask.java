@@ -26,10 +26,12 @@ public class UserTask extends Task {
   protected String formKey;
   protected String dueDate;
   protected String category;
+  protected String estimatedDuration;
   protected List<String> candidateUsers = new ArrayList<String>();
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
   protected List<ActivitiListener> taskListeners = new ArrayList<ActivitiListener>();
+  protected List<Resource> resources = new ArrayList<Resource>();
 
   public String getAssignee() {
     return assignee;
@@ -62,13 +64,19 @@ public class UserTask extends Task {
     this.dueDate = dueDate;
   }
   public String getCategory() {
-		return category;
-	}
-	public void setCategory(String category) {
-		this.category = category;
-	}
-	public List<String> getCandidateUsers() {
-    return candidateUsers;
+	  return category;
+  }
+  public void setCategory(String category) {
+	  this.category = category;
+  }
+  public String getEstimatedDuration() {
+	  return estimatedDuration;
+  }
+  public void setEstimatedDuration(String estimatedDuration) {
+	  this.estimatedDuration = estimatedDuration;
+  }
+  public List<String> getCandidateUsers() {
+	  return candidateUsers;
   }
   public void setCandidateUsers(List<String> candidateUsers) {
     this.candidateUsers = candidateUsers;
@@ -92,6 +100,14 @@ public class UserTask extends Task {
     this.taskListeners = taskListeners;
   }
   
+  public List<Resource> getResources() {
+    return resources;
+  }
+  
+  public void setResources(List<Resource> resources) {
+    this.resources = resources;
+  }
+  
   public UserTask clone() {
     UserTask clone = new UserTask();
     clone.setValues(this);
@@ -108,11 +124,19 @@ public class UserTask extends Task {
     setFormKey(otherElement.getFormKey());
     setDueDate(otherElement.getDueDate());
     setCategory(otherElement.getCategory());
+    setEstimatedDuration(otherElement.getEstimatedDuration());
     
     taskListeners = new ArrayList<ActivitiListener>();
     if (otherElement.getTaskListeners() != null && otherElement.getTaskListeners().size() > 0) {
       for (ActivitiListener listener : otherElement.getTaskListeners()) {
         taskListeners.add(listener.clone());
+      }
+    }
+
+    resources = new ArrayList<Resource>();
+    if (otherElement.getResources() != null && otherElement.getResources().size() > 0) {
+      for (Resource resource : otherElement.getResources()) {
+        resources.add(resource.clone());
       }
     }
   }

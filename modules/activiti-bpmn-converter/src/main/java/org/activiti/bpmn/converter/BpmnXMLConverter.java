@@ -252,6 +252,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	  BpmnModel model = new BpmnModel();
 		try {
 			Process activeProcess = null;
+			Pool activePool = null;
 			List<SubProcess> activeSubProcessList = new ArrayList<SubProcess>();
 			while (xtr.hasNext()) {
 				try {
@@ -272,8 +273,6 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				if (xtr.isStartElement() == false)
 					continue;
 
-				System.out.println(xtr.getLocalName());
-				
 				if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
 
 					model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
@@ -318,6 +317,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				    pool.setProcessRef(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_REF));
 				    BpmnXMLUtil.parseChildElements(ELEMENT_PARTICIPANT, pool, xtr, model);
 				    model.getPools().add(pool);
+				    
+				    activePool = pool;
 				  }
 
 				} else if (ELEMENT_PROCESS.equals(xtr.getLocalName())) {
@@ -344,12 +345,8 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					new DocumentationParser().parseChildElement(xtr, parentElement, model);
 				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-					// The tag extensionElements (Resources) may be in the pool or in the process element.
-//					if (model.getPools().size() > 0 && activeProcess == null) 
-//						new ExtensionElementsParser().parse(xtr, activeSubProcessList, model.getPools().get(0), model);
-//					else                                                      
-						new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
-				
+					if (activePool != null)	new ExtensionElementsParser().parse(xtr, activeSubProcessList, activePool, model);
+					else new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
 				} else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
           new SubProcessParser().parse(xtr, activeSubProcessList, activeProcess);
           

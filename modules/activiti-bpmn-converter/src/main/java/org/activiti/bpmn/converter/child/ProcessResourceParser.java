@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ProcessResource;
 
@@ -30,7 +31,7 @@ public class ProcessResourceParser extends BaseChildElementParser {
 	}
 
 	public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-		if (parentElement instanceof Process == false) return;
+		if (parentElement instanceof Process == false && parentElement instanceof Pool == false) return;
 
 		ProcessResource resource = new ProcessResource();
 		BpmnXMLUtil.addXMLLocation(resource, xtr);
@@ -42,6 +43,7 @@ public class ProcessResourceParser extends BaseChildElementParser {
 		resource.setCost(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_RESOURCE_COST));
 		resource.setTimeUnit(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_RESOURCE_TIME_UNIT));
 
-		((Process) parentElement).getResources().add(resource);
+		if (parentElement instanceof Process) ((Process) parentElement).getResources().add(resource);
+		else ((Pool) parentElement).getResources().add(resource);
 	}
 }

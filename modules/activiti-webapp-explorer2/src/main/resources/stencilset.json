@@ -48,20 +48,20 @@
       "popular" : false
     }, {
       "id" : "process_executable",
-	  "type" : "Choice",
-	  "title" : "Executable",
-	  "value" : "Yes",
-	  "description" : "Define if the process is executable.",
-	  "popular" : true,
-	  "items" : [ {
-	    "id" : "no",
-	    "title" : "No",
-	    "value" : "No"
-	  }, {
-	    "id" : "yes",
-	    "title" : "Yes",
-	    "value" : "Yes"
-	  }]
+    "type" : "Choice",
+    "title" : "Executable",
+    "value" : "Yes",
+    "description" : "Define if the process is executable.",
+    "popular" : true,
+    "items" : [ {
+      "id" : "no",
+      "title" : "No",
+      "value" : "No"
+    }, {
+      "id" : "yes",
+      "title" : "Yes",
+      "value" : "Yes"
+    }]
     }, {
       "id" : "process_version",
       "type" : "String",
@@ -77,46 +77,15 @@
       "description" : "Target namespace for the process definition.",
       "popular" : false
     } ]
-  }, {
-    "name" : "usertaskbase",
-    "properties" : [ {
-      "id" : "formkeydefinition",
-      "type" : "String",
-      "title" : "Form key",
-      "value" : "",
-      "description" : "Form key of the user task.",
-      "popular" : true
-    }, {
-      "id" : "duedatedefinition",
-      "type" : "String",
-      "title" : "Due date",
-      "value" : "",
-      "description" : "Due date of the user task.",
-      "popular" : true
-    }, {
-      "id" : "prioritydefinition",
-      "type" : "String",
-      "title" : "Priority",
-      "value" : "",
-      "description" : "Priority of the user task. @",
-      "popular" : true
-    }, {
-      "id" : "estimatedduration",
-      "type" : "String",
-      "title" : "Estimated Duration",
-      "value" : "",
-      "description" : "Estimated Duration of the user task (Used for simulation - Use ISO8601 Format).",
-      "popular" : true
-    } ]
   }, 
-  {
-    "name" : "usertaskresource",
+    {
+    "name" : "processresource",
     "properties" : [ {
-                      "id" : "usertaskresource",
+                      "id" : "processresource",
                       "type" : "Complex",
                       "title" : "Resources",
                       "value" : "",
-                      "description" : "Resource definition for the user task",
+                      "description" : "Resource definition for the process (Used on simulation)",
                       "popular" : true,
                       "complexItems" : [ {                      
                                             "id" : "resource_id",
@@ -216,6 +185,72 @@
                                         ]
                       } 
                     ]
+    }, {
+    "name" : "usertaskbase",
+    "properties" : [ {
+      "id" : "formkeydefinition",
+      "type" : "String",
+      "title" : "Form key",
+      "value" : "",
+      "description" : "Form key of the user task.",
+      "popular" : true
+    }, {
+      "id" : "duedatedefinition",
+      "type" : "String",
+      "title" : "Due date",
+      "value" : "",
+      "description" : "Due date of the user task.",
+      "popular" : true
+    }, {
+      "id" : "prioritydefinition",
+      "type" : "String",
+      "title" : "Priority",
+      "value" : "",
+      "description" : "Priority of the user task. @",
+      "popular" : true
+    }, {
+      "id" : "estimatedduration",
+      "type" : "String",
+      "title" : "Estimated Duration",
+      "value" : "",
+      "description" : "Estimated Duration of the user task (Used for simulation - Use ISO8601 Format).",
+      "popular" : true
+    } ]
+  }, 
+  {
+    "name" : "usertaskresource",
+    "properties" : [ {
+                      "id" : "usertaskresource",
+                      "type" : "Complex",
+                      "title" : "Resources",
+                      "value" : "",
+                      "description" : "Resources used in the user task",
+                      "popular" : true,
+                      "complexItems" : [ {                      
+                                            "id" : "resource_id",
+                                            "name" : "Resource ID",
+                                            "name_de" : "Resource ID",
+                                            "type" : "String",
+                                            "description" : "ID from previously configured process resource.",
+                                            "description_de" : "ID from previously configured process resource.",
+                                            "value" : "",
+                                            "width" : 150,
+                                            "optional" : false
+                                          },
+                                          {
+                                            "id" : "quantity",
+                                            "name" : "Quantity",
+                                            "name_de" : "Quantity",
+                                            "type" : "String",
+                                            "description" : "This defines how many resources will be used on the user task.",
+                                            "description_de" : "This defines how many resources will be used on the user task.",
+                                            "value" : "1.0",
+                                            "width" : 150,
+                                            "optional" : false
+                                          }
+                                        ]
+                      } 
+                    ]
   },  
   {
     "name" : "usertaskassignment",
@@ -224,7 +259,7 @@
       "type" : "Complex",
       "title" : "Assignments",
       "value" : "",
-      "description" : "Assignment definition for the user task @",
+      "description" : "Assignment definition for the user task",
       "popular" : true,
       "complexItems" : [ {
         "id" : "assignment_type",
@@ -1177,7 +1212,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "processbase", "executionlistenersbase" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "processresource", "executionlistenersbase" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1367,7 +1402,7 @@
     "description" : "Pools and Lanes represent responsibilities for activities in a process. A pool or a lane can be an organization, a role or a system.",
     "view" : "swimlane/pool.svg",
     "icon" : "swimlane/pool.png",
-    "propertyPackages" : [ "elementbase", "baseattributes", "processbase" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "processbase", "processresource" ],
     "roles" : [ "all", "messageflow_start", "messageflow_end", "fromtoall", "canContainArtifacts" ],
     "layout" : [{"type" : "layout.bpmn2_0.pool", "orientation" : "horizontal"}]
   }, {

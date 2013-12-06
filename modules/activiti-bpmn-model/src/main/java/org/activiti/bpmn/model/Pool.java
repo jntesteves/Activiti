@@ -12,6 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Tijs Rademakers
  */
@@ -20,7 +23,14 @@ public class Pool extends BaseElement {
   protected String name;
   protected String processRef;
   protected boolean executable = true;
-  
+  protected List<ProcessResource> resources = new ArrayList<ProcessResource>();
+
+  public List<ProcessResource> getResources() {
+	return resources;
+  }
+  public void setResources(List<ProcessResource> resources) {
+	this.resources = resources;
+  }
   public String getName() {
     return name;
   }
@@ -51,5 +61,12 @@ public class Pool extends BaseElement {
     setName(otherElement.getName());
     setProcessRef(otherElement.getProcessRef());
     setExecutable(otherElement.isExecutable());
+    
+    resources = new ArrayList<ProcessResource>();
+    if (otherElement.getResources() != null && otherElement.getResources().size() > 0) {
+      for (ProcessResource resource : otherElement.getResources()) {
+    	  resources.add(resource.clone());
+      }
+    }
   }
 }

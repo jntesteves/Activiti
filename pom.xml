@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.15-SNAPSHOT</version>
+  <version>5.15.2-SIMULATION</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
@@ -800,9 +800,7 @@
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-camel</module>	      
-        <module>modules/activiti-mule</module>
         <module>modules/activiti-cdi</module>
-        <module>modules/activiti-ldap</module>
       </modules>
     </profile>
     <profile>
@@ -888,17 +886,19 @@
     </profile>
   </profiles>
   
-  <distributionManagement>
-    <snapshotRepository>
-      <id>alfresco.snapshot.repo</id>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <uniqueVersion>false</uniqueVersion>
-    </snapshotRepository>
-    <repository>
-      <id>alfresco.release.repo</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-    </repository>
-  </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>Internal Releases</name>
+			<url>http://192.168.0.6:8080/nexus/content/repositories/releases</url>
+		</repository>
+
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>http://192.168.0.6:8080/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
   <!-- Various information, not used by the build -->
 

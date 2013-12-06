@@ -18,13 +18,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.ActivitiListener;
-
 import math.geom2d.Point2D;
 import math.geom2d.conic.Circle2D;
 import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -37,6 +36,7 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Pool;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ProcessResource;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.editor.constants.EditorJsonConstants;
@@ -102,6 +102,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     // boundary events
     BoundaryEventJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    
+    // Process Resource
+    ProcessResourceJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+    
   }
   
   private static final List<String> DI_CIRCLES = new ArrayList<String>();
@@ -179,6 +183,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     if (StringUtils.isNotEmpty(mainProcess.getDocumentation())) {
       propertiesNode.put(PROPERTY_DOCUMENTATION, mainProcess.getDocumentation());
     }
+    
+    // Convert Resources to Json
+    convertProcessResourceToJson(mainProcess.getResources(), propertiesNode); 
+    
     modelNode.put(EDITOR_SHAPE_PROPERTIES, propertiesNode);
     
     if (model.getPools().size() > 0) {
@@ -196,6 +204,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         if (StringUtils.isNotEmpty(pool.getName())) {
           poolPropertiesNode.put(PROPERTY_NAME, pool.getName());
         }
+        
+        // Convert Resources to Json
+        convertProcessResourceToJson(pool.getResources(), poolPropertiesNode); 
+
         poolNode.put(EDITOR_SHAPE_PROPERTIES, poolPropertiesNode);
         poolNode.put(EDITOR_OUTGOING, objectMapper.createArrayNode());
         
@@ -249,6 +261,32 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return modelNode;
   }
   
+  private void convertProcessResourceToJson(List<ProcessResource> resources, ObjectNode nodeMaster){
+    if (resources.size() > 0){
+    	// Resource JSON Example: {"totalCount": 1, "items": [{"resource_id": "vendas", "amount": "10", "daily_time": "PT8H", "currency": "R$", "cost": "3000", "time_unit": "mounth"}]}    	
+    	ObjectNode resourceNode = objectMapper.createObjectNode();
+    	
+    	ArrayNode resourceItems = objectMapper.createArrayNode();
+    	for (ProcessResource resource: resources){
+	        
+	        ObjectNode resourcePropertyNode = objectMapper.createObjectNode();
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_ID, resource.getId());
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_AMOUNT, resource.getAmount());
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_DAILY_TIME, resource.getDailyTime());
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_CURRENCY, resource.getCurrency());
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_COST, resource.getCost());
+	        resourcePropertyNode.put(PROPERTY_PROCESS_RESOURCE_TIME_UNIT, resource.getTimeUnit());
+
+	        resourceItems.add(resourcePropertyNode);
+	        
+    	}
+    	resourceNode.put("totalCount", resourceItems.size());
+    	resourceNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, resourceItems);
+    	
+    	nodeMaster.put(PROPERTY_PROCESS_RESOURCE, resourceNode);
+    }
+  }
+  
   @Override
   public void processFlowElements(Collection<? extends FlowElement> flowElements, BpmnModel model, ArrayNode shapesArrayNode, 
       double subProcessX, double subProcessY) {
@@ -291,12 +329,25 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         if (processExecutableNode != null && StringUtils.isNotEmpty(processExecutableNode.asText())) {
           pool.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, shapeNode));
         }
+        
+        JsonNode processResourceNode = shapeNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_PROCESS_RESOURCE);
+        if (processResourceNode != null) {
+        	pool.setResources(convertJsonToResources(processResourceNode));
+        }
+        
         bpmnModel.getPools().add(pool);
         
         Process process = new Process();
         process.setId(pool.getProcessRef());
         process.setName(pool.getName());
         process.setExecutable(pool.isExecutable());
+
+        if (pool.getResources() != null && pool.getResources().size() > 0) {
+          for (ProcessResource resource : pool.getResources()) {
+        	  process.getResources().add(resource.clone());
+          }
+        }
+        
         bpmnModel.addProcess(process);
         
         processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
@@ -346,6 +397,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       JsonNode processExecutionListenerNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_EXECUTION_LISTENERS);
       if (processExecutionListenerNode != null && StringUtils.isNotEmpty(processExecutionListenerNode.asText())){
          process.setExecutionListeners(convertJsonToListeners(processExecutionListenerNode));
+      }
+      
+      JsonNode processResourceNode = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_PROCESS_RESOURCE);
+      if (processResourceNode != null) {
+         process.setResources(convertJsonToResources(processResourceNode));
       }
       
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
@@ -433,6 +489,41 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return executionListeners;
   }
   
+  private List<ProcessResource> convertJsonToResources(JsonNode resourcesNode) {
+    List<ProcessResource> processResources = new ArrayList<ProcessResource>();
+      
+    JsonNode itemsArrayNode = resourcesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsArrayNode != null) {
+      for (JsonNode itemNode : itemsArrayNode) {
+        if (itemNode.get(PROPERTY_PROCESS_RESOURCE_ID) != null && StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_ID).asText())) {
+
+          ProcessResource resource = new ProcessResource();
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_ID).asText())) {
+            resource.setId(itemNode.get(PROPERTY_PROCESS_RESOURCE_ID).asText());
+          }
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_AMOUNT).asText())) {
+              resource.setAmount(itemNode.get(PROPERTY_PROCESS_RESOURCE_AMOUNT).asText());
+          }
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_DAILY_TIME).asText())) {
+              resource.setDailyTime(itemNode.get(PROPERTY_PROCESS_RESOURCE_DAILY_TIME).asText());
+          }
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_CURRENCY).asText())) {
+              resource.setCurrency(itemNode.get(PROPERTY_PROCESS_RESOURCE_CURRENCY).asText());
+          }
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_COST).asText())) {
+              resource.setCost(itemNode.get(PROPERTY_PROCESS_RESOURCE_COST).asText());
+          }
+          if (StringUtils.isNotEmpty(itemNode.get(PROPERTY_PROCESS_RESOURCE_TIME_UNIT).asText())) {
+              resource.setTimeUnit(itemNode.get(PROPERTY_PROCESS_RESOURCE_TIME_UNIT).asText());
+          }
+          
+          processResources.add(resource);
+        }
+      }
+    }
+    return processResources;
+  }
+
   private void fillSubShapes(Map<String, SubProcess> subShapesMap, SubProcess subProcess) {
     for (FlowElement flowElement : subProcess.getFlowElements()) {
       if (flowElement instanceof SubProcess) {

@@ -15,76 +15,26 @@ package org.activiti.bpmn.model;
 /**
  * @author iColabora
  */
-public class Resource extends BaseElement {
+public class UserTaskResource extends BaseElement {
 
-	protected String resource_id;
-	protected String amount;
-	protected String daily_time;
-	protected String currency;
-	protected String cost;
-	protected String time_unit;
+	protected String quantity;
 
-
-	public String getResource_id() {
-		return resource_id;
+	public String getQuantity() {
+		return quantity;
 	}
 
-	public void setResource_id(String resource_id) {
-		this.resource_id = resource_id;
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
 	}
 
-	public String getAmount() {
-		return amount;
-	}
-
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
-
-	public String getDaily_time() {
-		return daily_time;
-	}
-
-	public void setDaily_time(String daily_time) {
-		this.daily_time = daily_time;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public String getCost() {
-		return cost;
-	}
-
-	public void setCost(String cost) {
-		this.cost = cost;
-	}
-
-	public String getTime_unit() {
-		return time_unit;
-	}
-
-	public void setTime_unit(String time_unit) {
-		this.time_unit = time_unit;
-	}
-
-	public Resource clone() {
-		Resource clone = new Resource();
+	public UserTaskResource clone() {
+		UserTaskResource clone = new UserTaskResource();
 		clone.setValues(this);
 		return clone;
 	}
 
-	public void setValues(Resource otherProperty) {
-		setResource_id(otherProperty.getResource_id());
-		setAmount(otherProperty.getAmount());
-		setDaily_time(otherProperty.getDaily_time());
-		setCurrency(otherProperty.getCurrency());
-		setCost(otherProperty.getCost());
-		setTime_unit(otherProperty.getTime_unit());
+	public void setValues(UserTaskResource otherProperty) {
+		setId(otherProperty.getId());
+		setQuantity(otherProperty.getQuantity());
 	}
 }

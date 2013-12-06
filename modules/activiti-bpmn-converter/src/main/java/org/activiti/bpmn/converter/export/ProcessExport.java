@@ -12,6 +12,9 @@
  */
 package org.activiti.bpmn.converter.export;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
@@ -19,11 +22,6 @@ import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class ProcessExport implements BpmnXMLConstants {
   /**
@@ -74,6 +72,7 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
     
+    ProcessResourceExport.writeProcessResources(process, xtw);
     LaneExport.writeLanes(process, xtw);
   }
 }

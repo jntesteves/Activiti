@@ -260,18 +260,20 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					LOGGER.error("Error reading XML document", e);
 					throw new XMLException("Error reading XML", e);
 				}
-
+				
 				if (xtr.isEndElement()  && ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
 					activeSubProcessList.remove(activeSubProcessList.size() - 1);
 				}
 				
 				if (xtr.isEndElement()  && ELEMENT_TRANSACTION.equals(xtr.getLocalName())) {
-          activeSubProcessList.remove(activeSubProcessList.size() - 1);
-        }
+		          activeSubProcessList.remove(activeSubProcessList.size() - 1);
+		        }
 
 				if (xtr.isStartElement() == false)
 					continue;
 
+				System.out.println(xtr.getLocalName());
+				
 				if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
 
 					model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
@@ -286,26 +288,26 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					new SignalParser().parse(xtr, model);
 					
 				} else if (ELEMENT_MESSAGE.equals(xtr.getLocalName())) {
-          new MessageParser().parse(xtr, model);
+					new MessageParser().parse(xtr, model);
           
 				} else if (ELEMENT_ERROR.equals(xtr.getLocalName())) {
           
-          if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-            model.addError(xtr.getAttributeValue(null, ATTRIBUTE_ID),
-                xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
-          }
+		          if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
+		            model.addError(xtr.getAttributeValue(null, ATTRIBUTE_ID),
+		                xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
+		          }
           
 				} else if (ELEMENT_IMPORT.equals(xtr.getLocalName())) {
 				  new ImportParser().parse(xtr, model);
           
 				} else if (ELEMENT_ITEM_DEFINITION.equals(xtr.getLocalName())) {
-          new ItemDefinitionParser().parse(xtr, model);
+					new ItemDefinitionParser().parse(xtr, model);
           
 				} else if (ELEMENT_INTERFACE.equals(xtr.getLocalName())) {
 				  new InterfaceParser().parse(xtr, model);
 				  
 				} else if (ELEMENT_IOSPECIFICATION.equals(xtr.getLocalName())) {
-          new IOSpecificationParser().parseChildElement(xtr, activeProcess, model);
+					new IOSpecificationParser().parseChildElement(xtr, activeProcess, model);
 					
 				} else if (ELEMENT_PARTICIPANT.equals(xtr.getLocalName())) {
 				  
@@ -322,9 +324,9 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					
 				  Process process = new ProcessParser().parse(xtr, model);
 				  if (process != null) {
-            activeProcess = process;	
+					  activeProcess = process;	
 				  }
-				
+				  
 				} else if (ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())) {
 				  new PotentialStarterParser().parse(xtr, activeProcess);
 				  
@@ -342,7 +344,11 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 					new DocumentationParser().parseChildElement(xtr, parentElement, model);
 				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-          new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
+					// The tag extensionElements (Resources) may be in the pool or in the process element.
+//					if (model.getPools().size() > 0 && activeProcess == null) 
+//						new ExtensionElementsParser().parse(xtr, activeSubProcessList, model.getPools().get(0), model);
+//					else                                                      
+						new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
 				
 				} else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
           new SubProcessParser().parse(xtr, activeSubProcessList, activeProcess);

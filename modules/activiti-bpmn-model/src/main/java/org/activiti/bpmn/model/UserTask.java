@@ -31,7 +31,7 @@ public class UserTask extends Task {
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
   protected List<ActivitiListener> taskListeners = new ArrayList<ActivitiListener>();
-  protected List<Resource> resources = new ArrayList<Resource>();
+  protected List<UserTaskResource> resources = new ArrayList<UserTaskResource>();
 
   public String getAssignee() {
     return assignee;
@@ -100,11 +100,11 @@ public class UserTask extends Task {
     this.taskListeners = taskListeners;
   }
   
-  public List<Resource> getResources() {
+  public List<UserTaskResource> getResources() {
     return resources;
   }
   
-  public void setResources(List<Resource> resources) {
+  public void setResources(List<UserTaskResource> resources) {
     this.resources = resources;
   }
   
@@ -133,9 +133,9 @@ public class UserTask extends Task {
       }
     }
 
-    resources = new ArrayList<Resource>();
+    resources = new ArrayList<UserTaskResource>();
     if (otherElement.getResources() != null && otherElement.getResources().size() > 0) {
-      for (Resource resource : otherElement.getResources()) {
+      for (UserTaskResource resource : otherElement.getResources()) {
         resources.add(resource.clone());
       }
     }

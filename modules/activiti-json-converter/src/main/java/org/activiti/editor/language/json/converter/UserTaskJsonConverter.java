@@ -13,11 +13,13 @@
 package org.activiti.editor.language.json.converter;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.UserTaskResource;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
@@ -96,8 +98,55 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter {
     setPropertyValue(PROPERTY_CATEGORY, userTask.getCategory(), propertiesNode);;
     
     addFormProperties(userTask.getFormProperties(), propertiesNode);
-    addResources(userTask.getResources(), propertiesNode);
+    addUserTaskResources(userTask.getResources(), propertiesNode);
   }
+  
+  protected void addUserTaskResources(List<UserTaskResource> resources, ObjectNode propertiesNode) {
+	  ObjectNode resourcesNode = objectMapper.createObjectNode();
+	  ArrayNode itemsNode = objectMapper.createArrayNode();
+	  for (UserTaskResource resource : resources) {
+		  ObjectNode resourceItemNode = objectMapper.createObjectNode();
+		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_ID, resource.getId());
+		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_QUANTITY, resource.getQuantity());
+
+		  itemsNode.add(resourceItemNode);
+	  }
+
+	  resourcesNode.put("totalCount", itemsNode.size());
+	  resourcesNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+	  propertiesNode.put("usertaskresource", resourcesNode);
+  }
+  
+  protected void convertJsonToResources(JsonNode objectNode, BaseElement element) {
+
+	  JsonNode resourcesNode = getProperty(PROPERTY_USERTASK_RESOURCE, objectNode);
+	  if (resourcesNode != null) {
+		  if (resourcesNode.isValueNode() && StringUtils.isNotEmpty(resourcesNode.asText())) {
+			  try {
+				  resourcesNode = objectMapper.readTree(resourcesNode.asText());
+			  } catch (Exception e) {
+				  LOGGER.info("Resources node can not be read", e);
+			  }
+		  }
+		  JsonNode itemsArrayNode = resourcesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+
+		  if (itemsArrayNode != null) {
+			  for (JsonNode resourceNode : itemsArrayNode) {
+				  JsonNode resourceIdNode = resourceNode.get(PROPERTY_USERTASK_RESOURCE_ID);
+				  if (resourceIdNode != null && StringUtils.isNotEmpty(resourceIdNode.asText())) {
+
+					  UserTaskResource resource = new UserTaskResource();
+					  resource.setId(resourceIdNode.asText());
+					  resource.setQuantity(getValueAsString(PROPERTY_USERTASK_RESOURCE_QUANTITY, resourceNode));
+
+					  if (element instanceof UserTask) {
+						  ((UserTask) element).getResources().add(resource);
+					  }
+				  }
+			  }
+		  }
+	  }
+  }  
   
   @Override
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {

@@ -217,11 +217,15 @@ public interface BpmnXMLConstants {
   
   public static final String ELEMENT_USERTASK_RESOURCE = "usertaskresource";
   public static final String ATTRIBUTE_USERTASK_RESOURCE_ID = "resource_id";
-  public static final String ATTRIBUTE_USERTASK_RESOURCE_AMOUNT = "amount";
-  public static final String ATTRIBUTE_USERTASK_RESOURCE_DAILY_TIME = "daily_time";
-  public static final String ATTRIBUTE_USERTASK_RESOURCE_CURRENCY = "currency";
-  public static final String ATTRIBUTE_USERTASK_RESOURCE_COST = "cost";
-  public static final String ATTRIBUTE_USERTASK_RESOURCE_TIME_UNIT = "time_unit";
+  public static final String ATTRIBUTE_USERTASK_RESOURCE_QUANTITY = "quantity";
+
+  public static final String ELEMENT_PROCESS_RESOURCE = "processresource";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_ID = "resource_id";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_AMOUNT = "amount";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_DAILY_TIME = "daily_time";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_CURRENCY = "currency";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_COST = "cost";
+  public static final String ATTRIBUTE_PROCESS_RESOURCE_TIME_UNIT = "time_unit";
   
   public static final String ELEMENT_FORMPROPERTY = "formProperty";
   public static final String ATTRIBUTE_FORM_ID = "id";

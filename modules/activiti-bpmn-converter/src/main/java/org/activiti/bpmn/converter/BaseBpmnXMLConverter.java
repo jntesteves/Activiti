@@ -37,13 +37,13 @@ import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.UserTaskResource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -325,18 +325,18 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     }
   }
   
-  protected void writeResources(FlowElement flowElement, XMLStreamWriter xtw) throws Exception {
+  protected void writeUserTaskResources(FlowElement flowElement, XMLStreamWriter xtw) throws Exception {
 
-	  List<Resource> resourceList = null;
+	  List<UserTaskResource> resourceList = null;
 	  if (flowElement instanceof UserTask) {
 		  resourceList = ((UserTask) flowElement).getResources();
 	  }
 
 	  if (resourceList != null) {
 
-		  for (Resource resource : resourceList) {
+		  for (UserTaskResource resource : resourceList) {
 
-			  if (StringUtils.isNotEmpty(resource.getResource_id())) {
+			  if (StringUtils.isNotEmpty(resource.getId())) {
 
 				  if (didWriteExtensionStartElement == false) { 
 					  xtw.writeStartElement(ELEMENT_EXTENSIONS);
@@ -344,12 +344,8 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 				  }
 
 				  xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_USERTASK_RESOURCE, ACTIVITI_EXTENSIONS_NAMESPACE);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_ID, resource.getResource_id(), xtw);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_AMOUNT, resource.getAmount(), xtw);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_DAILY_TIME, resource.getDaily_time(), xtw);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_CURRENCY, resource.getCurrency(), xtw);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_COST, resource.getCost(), xtw);
-				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_TIME_UNIT, resource.getTime_unit(), xtw);
+				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_ID, resource.getId(), xtw);
+				  writeDefaultAttribute(ATTRIBUTE_USERTASK_RESOURCE_QUANTITY, resource.getQuantity(), xtw);
 
 				  xtw.writeEndElement();
 			  }

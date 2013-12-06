@@ -129,12 +129,16 @@ public interface StencilConstants {
 	
 	final String PROPERTY_USERTASK_RESOURCE = "usertaskresource";
 	final String PROPERTY_USERTASK_RESOURCE_ID = "resource_id";
-	final String PROPERTY_USERTASK_RESOURCE_AMOUNT = "amount";
-	final String PROPERTY_USERTASK_RESOURCE_DAILY_TIME = "daily_time";
-	final String PROPERTY_USERTASK_RESOURCE_CURRENCY = "currency";
-	final String PROPERTY_USERTASK_RESOURCE_COST = "cost";
-	final String PROPERTY_USERTASK_RESOURCE_TIME_UNIT = "time_unit";
+	final String PROPERTY_USERTASK_RESOURCE_QUANTITY = "quantity";
 
+	final String PROPERTY_PROCESS_RESOURCE = "processresource";
+	final String PROPERTY_PROCESS_RESOURCE_ID = "resource_id";
+	final String PROPERTY_PROCESS_RESOURCE_AMOUNT = "amount";
+	final String PROPERTY_PROCESS_RESOURCE_DAILY_TIME = "daily_time";
+	final String PROPERTY_PROCESS_RESOURCE_CURRENCY = "currency";
+	final String PROPERTY_PROCESS_RESOURCE_COST = "cost";
+	final String PROPERTY_PROCESS_RESOURCE_TIME_UNIT = "time_unit";
+	
 	final String PROPERTY_USERTASK_ASSIGNMENT = "usertaskassignment";
   final String PROPERTY_USERTASK_ASSIGNMENT_TYPE = "assignment_type";
   final String PROPERTY_USERTASK_ASSIGNMENT_EXPRESSION = "resourceassignmentexpr";

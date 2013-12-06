@@ -51,9 +51,8 @@ public class ProcessParser implements BpmnXMLConstants {
       }
 
       BpmnXMLUtil.addCustomAttributes(xtr, process, ProcessExport.defaultAttributes);
-
+      
       model.getProcesses().add(process);
-
     }
     return process;
   }

@@ -12,6 +12,8 @@
 
        formProperty id="" type variable expression writable required
                     activiti:value
+                    
+       processresource
    -->
 
   <annotation>
@@ -79,6 +81,61 @@
       </restriction>
     </simpleType>
   </attribute>
+  
+  <element name="processresource">
+    <annotation>
+      <documentation>
+        Subelement of the extensionsElement of activities that support the process resource definition.
+        Used on simulation.
+      </documentation>
+    </annotation>
+    <complexType>
+      <!-- TODO: activiti:value -->
+      <attribute name="resource_id" use="required" type="string">
+        <annotation>
+          <documentation>
+            The key used to the resource (must be unique).
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="amount" type="string" use="required">
+        <annotation>
+          <documentation>
+            This defines the amount of available resources.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="daily_time" type="string" use="required">
+        <annotation>
+          <documentation>
+            This defines the working day hours of resource (Use ISO8601 Format).
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="currency" type="string" use="required">
+        <annotation>
+          <documentation>
+            This defines the currency sign.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="cost" type="string" use="required">
+        <annotation>
+          <documentation>
+            This defines a resource cost per unit time.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="time_unit" type="string" use="required">
+        <annotation>
+          <documentation>
+            Specifies the time unit of resource.
+          </documentation>
+        </annotation>
+      </attribute>
+
+    </complexType>
+  </element>  
   
   <element name="formProperty">
     <annotation>

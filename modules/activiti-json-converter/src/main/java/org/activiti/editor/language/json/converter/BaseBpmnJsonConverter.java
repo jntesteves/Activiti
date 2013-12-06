@@ -35,7 +35,6 @@ import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -201,6 +200,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         activity.setLoopCharacteristics(multiInstanceObject);
       }
     }
+    
     if (parentElement instanceof Process) {
       ((Process) parentElement).addFlowElement(flowElement);
     } else if (parentElement instanceof SubProcess) {
@@ -266,26 +266,6 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     formPropertiesNode.put("totalCount", itemsNode.size());
     formPropertiesNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
     propertiesNode.put("formproperties", formPropertiesNode);
-  }
-  
-  protected void addResources(List<Resource> resources, ObjectNode propertiesNode) {
-	  ObjectNode resourcesNode = objectMapper.createObjectNode();
-	  ArrayNode itemsNode = objectMapper.createArrayNode();
-	  for (Resource resource : resources) {
-		  ObjectNode resourceItemNode = objectMapper.createObjectNode();
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_ID, resource.getResource_id());
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_AMOUNT, resource.getAmount());
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_DAILY_TIME, resource.getDaily_time());
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_CURRENCY, resource.getCurrency());
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_COST, resource.getCost());
-		  resourceItemNode.put(PROPERTY_USERTASK_RESOURCE_TIME_UNIT, resource.getTime_unit());
-
-		  itemsNode.add(resourceItemNode);
-	  }
-
-	  resourcesNode.put("totalCount", itemsNode.size());
-	  resourcesNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
-	  propertiesNode.put("usertaskresource", resourcesNode);
   }
   
   protected void addListeners(List<ActivitiListener> listeners, boolean isExecutionListener, ObjectNode propertiesNode) {
@@ -454,41 +434,6 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         }
       }
     }
-  }
-
-  protected void convertJsonToResources(JsonNode objectNode, BaseElement element) {
-
-	  JsonNode resourcesNode = getProperty(PROPERTY_USERTASK_RESOURCE, objectNode);
-	  if (resourcesNode != null) {
-		  if (resourcesNode.isValueNode() && StringUtils.isNotEmpty(resourcesNode.asText())) {
-			  try {
-				  resourcesNode = objectMapper.readTree(resourcesNode.asText());
-			  } catch (Exception e) {
-				  LOGGER.info("Resources node can not be read", e);
-			  }
-		  }
-		  JsonNode itemsArrayNode = resourcesNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
-
-		  if (itemsArrayNode != null) {
-			  for (JsonNode resourceNode : itemsArrayNode) {
-				  JsonNode resourceIdNode = resourceNode.get(PROPERTY_USERTASK_RESOURCE_ID);
-				  if (resourceIdNode != null && StringUtils.isNotEmpty(resourceIdNode.asText())) {
-
-					  Resource resource = new Resource();
-					  resource.setResource_id(resourceIdNode.asText());
-					  resource.setAmount(getValueAsString(PROPERTY_USERTASK_RESOURCE_AMOUNT, resourceNode));
-					  resource.setDaily_time(getValueAsString(PROPERTY_USERTASK_RESOURCE_DAILY_TIME, resourceNode));
-					  resource.setCurrency(getValueAsString(PROPERTY_USERTASK_RESOURCE_CURRENCY, resourceNode));
-					  resource.setCost(getValueAsString(PROPERTY_USERTASK_RESOURCE_COST, resourceNode));
-					  resource.setTime_unit(getValueAsString(PROPERTY_USERTASK_RESOURCE_TIME_UNIT, resourceNode));
-
-					  if (element instanceof UserTask) {
-						  ((UserTask) element).getResources().add(resource);
-					  }
-				  }
-			  }
-		  }
-	  }
   }
   
   protected void convertJsonToListeners(JsonNode objectNode, BaseElement element) {

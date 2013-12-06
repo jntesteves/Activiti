@@ -34,6 +34,15 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<Artifact> artifactList = new ArrayList<Artifact>();
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
+  protected List<ProcessResource> resources = new ArrayList<ProcessResource>();
+
+  public List<ProcessResource> getResources() {
+	return resources;
+  }
+
+  public void setResources(List<ProcessResource> resources) {
+	this.resources = resources;
+  }
 
   public String getDocumentation() {
     return documentation;
@@ -199,6 +208,13 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
       for (ActivitiListener listener : otherElement.getExecutionListeners()) {
         executionListeners.add(listener.clone());
+      }
+    }
+    
+    resources = new ArrayList<ProcessResource>();
+    if (otherElement.getResources() != null && otherElement.getResources().size() > 0) {
+      for (ProcessResource resource : otherElement.getResources()) {
+    	  resources.add(resource.clone());
       }
     }
     

@@ -263,7 +263,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   
   private void convertProcessResourceToJson(List<ProcessResource> resources, ObjectNode nodeMaster){
     if (resources.size() > 0){
-    	// Resource JSON Example: {"totalCount": 1, "items": [{"resource_id": "vendas", "amount": "10", "daily_time": "PT8H", "currency": "R$", "cost": "3000", "time_unit": "mounth"}]}    	
+    	// Resource JSON Example: {"totalCount": 1, "items": [{"resource_id": "vendas", "amount": "10", "daily_time": "PT8H", "currency": "R$", "cost": "3000", "time_unit": "month"}]}    	
     	ObjectNode resourceNode = objectMapper.createObjectNode();
     	
     	ArrayNode resourceItems = objectMapper.createArrayNode();

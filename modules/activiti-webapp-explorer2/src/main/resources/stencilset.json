@@ -169,10 +169,10 @@
                                                           "value" : "day",
                                                           "refToView" : ""
                                                         }, {
-                                                          "id" : "tu_mounth",
-                                                          "title" : "Mounth",
-                                                          "title_de" : "Mounth",
-                                                          "value" : "mounth",
+                                                          "id" : "tu_month",
+                                                          "title" : "Month",
+                                                          "title_de" : "Month",
+                                                          "value" : "month",
                                                           "refToView" : ""
                                                         }, {
                                                           "id" : "tu_utilization",

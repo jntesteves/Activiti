@@ -85,7 +85,7 @@
                       "type" : "Complex",
                       "title" : "Resources",
                       "value" : "",
-                      "description" : "Resource definition for the process (Used on simulation)",
+                      "description" : "Resource definition for the process.",
                       "popular" : true,
                       "complexItems" : [ {                      
                                             "id" : "resource_id",
@@ -105,7 +105,7 @@
                                             "type" : "String",
                                             "description" : "This defines the amount of available resources.",
                                             "description_de" : "This defines the amount of available resources.",
-                                            "value" : "1.0",
+                                            "value" : "1",
                                             "width" : 150,
                                             "optional" : false
                                           },
@@ -224,7 +224,7 @@
                       "type" : "Complex",
                       "title" : "Resources",
                       "value" : "",
-                      "description" : "Resources used in the user task",
+                      "description" : "Resource definition for the user task",
                       "popular" : true,
                       "complexItems" : [ {                      
                                             "id" : "resource_id",
@@ -244,7 +244,7 @@
                                             "type" : "String",
                                             "description" : "This defines how many resources will be used on the user task.",
                                             "description_de" : "This defines how many resources will be used on the user task.",
-                                            "value" : "1.0",
+                                            "value" : "1",
                                             "width" : 150,
                                             "optional" : false
                                           }
@@ -856,9 +856,9 @@
     }, {
       "id" : "probability",
       "type" : "String",
-      "title" : "Probability (Used on simulation) %",
+      "title" : "% Probability (Simulation)",
       "value" : "",
-      "description" : "Probability of condition (Used for simulation - Type a integer number between 1 and 100).",
+      "description" : "Define the probability of sequence flow (integer between 0 and 100).",
       "popular" : true
     } ]
   }, {

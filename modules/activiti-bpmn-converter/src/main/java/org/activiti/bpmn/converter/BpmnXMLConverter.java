@@ -390,6 +390,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 			  for (Pool pool : model.getPools()) {
 			    if (process.getId().equals(pool.getProcessRef())) {
 			      pool.setExecutable(process.isExecutable());
+			      process.setResources(pool.getResources());
 			    }
 			  }
 			  processFlowElements(process.getFlowElements(), process);

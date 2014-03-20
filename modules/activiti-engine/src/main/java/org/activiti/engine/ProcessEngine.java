@@ -49,7 +49,7 @@ package org.activiti.engine;
 public interface ProcessEngine extends EngineServices {
 
   /** the version of the activiti library */
-  public static String VERSION = "5.15.8-SIMULATION";
+  public static String VERSION = "5.15.9-SIMULATION";
 
   /** The name as specified in 'process-engine-name' in 
    * the activiti.cfg.xml configuration file.

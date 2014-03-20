@@ -8,7 +8,7 @@
   <artifactId>activiti-root</artifactId>
 
   <packaging>pom</packaging>
-  <version>5.15.8-SIMULATION</version>
+  <version>5.15.9-SIMULATION</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>3.1.2.RELEASE</spring.framework.version>
@@ -798,8 +798,6 @@
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-osgi</module>
-        <module>modules/activiti-camel</module>	      
         <module>modules/activiti-cdi</module>
       </modules>
     </profile>

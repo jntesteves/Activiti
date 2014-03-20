@@ -59,10 +59,10 @@ import org.activiti.rest.service.api.engine.variable.IntegerRestVariableConverte
 import org.activiti.rest.service.api.engine.variable.LongRestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
+import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.service.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.StringRestVariableConverter;
-import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.activiti.rest.service.api.form.FormDataResponse;
 import org.activiti.rest.service.api.form.RestEnumFormProperty;
 import org.activiti.rest.service.api.form.RestFormProperty;
@@ -79,10 +79,10 @@ import org.activiti.rest.service.api.identity.UserResponse;
 import org.activiti.rest.service.api.management.JobResponse;
 import org.activiti.rest.service.api.management.TableResponse;
 import org.activiti.rest.service.api.repository.DeploymentResourceResponse;
+import org.activiti.rest.service.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.service.api.repository.DeploymentResponse;
 import org.activiti.rest.service.api.repository.ModelResponse;
 import org.activiti.rest.service.api.repository.ProcessDefinitionResponse;
-import org.activiti.rest.service.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.service.api.runtime.process.ExecutionResponse;
 import org.activiti.rest.service.api.runtime.process.ProcessInstanceResponse;
 import org.activiti.rest.service.api.runtime.task.TaskResponse;
@@ -633,8 +633,8 @@ public class RestResponseFactory {
     if (detail instanceof HistoricFormProperty) {
       HistoricFormProperty formProperty = (HistoricFormProperty) detail;
       result.setDetailType(HistoricDetailResponse.FORM_PROPERTY);
-      result.setPropertyId(formProperty.getPropertyId());
-      result.setPropertyValue(formProperty.getPropertyValue());
+      result.setPropertyId(formProperty.getVariableName());
+      result.setPropertyValue(formProperty.getValue().toString());
     } else if (detail instanceof HistoricVariableUpdate) {
       HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) detail;
       result.setDetailType(HistoricDetailResponse.VARIABLE_UPDATE);

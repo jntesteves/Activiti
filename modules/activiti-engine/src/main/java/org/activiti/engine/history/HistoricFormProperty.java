@@ -22,10 +22,8 @@ package org.activiti.engine.history;
  */
 public interface HistoricFormProperty extends HistoricDetail {
 
-  /** the id or key of the property */
-  String getPropertyId();
-
-  /** the submitted value */
-  String getPropertyValue();
-
+  String getVariableName();
+  String getVariableTypeName();
+  Object getValue();
+  int getRevision();
 }

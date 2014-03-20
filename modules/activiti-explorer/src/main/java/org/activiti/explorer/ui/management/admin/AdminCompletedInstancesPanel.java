@@ -488,11 +488,11 @@ public class AdminCompletedInstancesPanel extends DetailPanel {
 	      	}
       	} else {
       		HistoricFormProperty form = (HistoricFormProperty) detail;
-	      	if(variableNames.contains(form.getPropertyId()) == false) {
-	      		variableNames.add(form.getPropertyId());
-		        Item variableItem = variablesTable.addItem(form.getPropertyId());
-		        variableItem.getItemProperty("name").setValue(form.getPropertyId());
-		        variableItem.getItemProperty("value").setValue(form.getPropertyValue());
+	      	if(variableNames.contains(form.getVariableName()) == false) {
+	      		variableNames.add(form.getVariableName());
+		        Item variableItem = variablesTable.addItem(form.getVariableName());
+		        variableItem.getItemProperty("name").setValue(form.getVariableName());
+		        variableItem.getItemProperty("value").setValue(form.getValue());
 		        variableItem.getItemProperty("type").setValue("form property");
 	      	}
       	}

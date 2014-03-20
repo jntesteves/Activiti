@@ -40,11 +40,12 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
   }
   
   protected Object execute(CommandContext commandContext, TaskEntity task) {
-    commandContext.getHistoryManager()
-      .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
-    
+
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    taskFormHandler.submitFormProperties(properties, task.getExecution());
+    Map<String, Object> propertiesSubmitted = taskFormHandler.submitFormProperties(properties, task.getExecution());
+
+    commandContext.getHistoryManager()
+      .recordFormPropertiesSubmitted(task.getExecution(), propertiesSubmitted, taskId);
 
     if (completeTask) {
       task.complete();

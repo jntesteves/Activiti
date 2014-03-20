@@ -644,10 +644,10 @@ public class HistoryManager extends AbstractManager {
   /**
    * Report form properties submitted, if audit history is enabled.
    */
-  public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
+  public void recordFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, Object> properties, String taskId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       for (String propertyId: properties.keySet()) {
-        String propertyValue = properties.get(propertyId);
+        Object propertyValue = properties.get(propertyId);
         HistoricFormPropertyEntity historicFormProperty = new HistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
         getDbSqlSession().insert(historicFormProperty);
       }

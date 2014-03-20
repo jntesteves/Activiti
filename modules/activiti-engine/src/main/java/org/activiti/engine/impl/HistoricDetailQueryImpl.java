@@ -20,6 +20,7 @@ import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
+import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 import org.activiti.engine.impl.variable.HistoricJPAEntityVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
@@ -109,6 +110,7 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
       .findHistoricDetailsByQueryCriteria(this, page);
     
     HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
+    HistoricFormPropertyEntity formProperty = null;
     if (historicDetails!=null) {
       for (HistoricDetail historicDetail: historicDetails) {
         if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
@@ -125,8 +127,22 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
             varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
             varUpdate.getValue();
           }
+        }else if (historicDetail instanceof HistoricFormPropertyEntity) {
+          formProperty = (HistoricFormPropertyEntity)historicDetail;
+          
+          // Touch byte-array to ensure initialized inside context
+          // TODO there should be a generic way to initialize variable values
+          formProperty.getBytes();
+          
+          // ACT-863: EntityManagerFactorySession instance needed for fetching value, touch while inside context to store
+          // cached value
+          if (formProperty.getVariableType() instanceof JPAEntityVariableType) {
+            // Use HistoricJPAEntityVariableType to force caching of value to return from query
+            formProperty.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
+            formProperty.getValue();
+          }
         }
-      }
+      } 
     }
     return historicDetails;
   }

@@ -478,8 +478,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       .list();
     
     HistoricFormProperty historicProperty1 = (HistoricFormProperty) props.get(0);
-    assertEquals("formProp1", historicProperty1.getPropertyId());
-    assertEquals("Activiti rocks", historicProperty1.getPropertyValue());
+    assertEquals("formProp1", historicProperty1.getVariableName());
+    assertEquals("Activiti rocks", historicProperty1.getValue().toString());
     assertEquals(startedDate, historicProperty1.getTime());
     assertEquals(processInstance.getId(), historicProperty1.getProcessInstanceId());
     assertNull(historicProperty1.getTaskId());
@@ -490,8 +490,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("start", historicActivityInstance.getActivityId());
     
     HistoricFormProperty historicProperty2 = (HistoricFormProperty) props.get(1);
-    assertEquals("formProp2", historicProperty2.getPropertyId());
-    assertEquals("12345", historicProperty2.getPropertyValue());
+    assertEquals("formProp2", historicProperty2.getVariableName());
+    assertEquals("12345", historicProperty2.getValue().toString());
     assertEquals(startedDate, historicProperty2.getTime());
     assertEquals(processInstance.getId(), historicProperty2.getProcessInstanceId());
     assertNull(historicProperty2.getTaskId());
@@ -502,8 +502,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("start", historicActivityInstance.getActivityId());
     
     HistoricFormProperty historicProperty3 = (HistoricFormProperty) props.get(2);
-    assertEquals("formProp3", historicProperty3.getPropertyId());
-    assertEquals("Activiti still rocks!!!", historicProperty3.getPropertyValue());
+    assertEquals("formProp3", historicProperty3.getVariableName());
+    assertEquals("Activiti still rocks!!!", historicProperty3.getValue().toString());
     assertEquals(startedDate, historicProperty3.getTime());
     assertEquals(processInstance.getId(), historicProperty3.getProcessInstanceId());
     String activityInstanceId = historicProperty3.getActivityInstanceId();
@@ -513,8 +513,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertNotNull(historicProperty3.getTaskId());
     
     HistoricFormProperty historicProperty4 = (HistoricFormProperty) props.get(3);
-    assertEquals("formProp4", historicProperty4.getPropertyId());
-    assertEquals("54321", historicProperty4.getPropertyValue());
+    assertEquals("formProp4", historicProperty4.getVariableName());
+    assertEquals("54321", historicProperty4.getValue().toString());
     assertEquals(startedDate, historicProperty4.getTime());
     assertEquals(processInstance.getId(), historicProperty4.getProcessInstanceId());
     activityInstanceId = historicProperty4.getActivityInstanceId();
@@ -699,13 +699,13 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     
     assertTrue(details.get(0) instanceof HistoricFormProperty);
     HistoricFormProperty formProp1 = (HistoricFormProperty) details.get(0);
-    assertEquals("formProp1", formProp1.getPropertyId());
-    assertEquals("activiti rocks!", formProp1.getPropertyValue());
+    assertEquals("formProp1", formProp1.getVariableName());
+    assertEquals("activiti rocks!", formProp1.getValue().toString());
     
     assertTrue(details.get(1) instanceof HistoricFormProperty);
     HistoricFormProperty formProp2 = (HistoricFormProperty) details.get(1);
-    assertEquals("formProp2", formProp2.getPropertyId());
-    assertEquals("12345", formProp2.getPropertyValue());
+    assertEquals("formProp2", formProp2.getVariableName());
+    assertEquals("12345", formProp2.getValue().toString());
     
     
     assertTrue(details.get(2) instanceof HistoricVariableUpdate);

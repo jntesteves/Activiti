@@ -34,6 +34,8 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DefaultFormHandler implements FormHandler {
   
+  private static final long serialVersionUID = 1L;
+  
   protected Expression formKey;
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
@@ -90,15 +92,26 @@ public class DefaultFormHandler implements FormHandler {
     formData.setFormProperties(formProperties);
   }
 
-  public void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
+  public Map<String, Object> submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
     Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
+    Map<String, Object> propertiesSubmitted = new HashMap<String, Object>();
+    
     for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
+      boolean shouldReport = propertiesCopy.containsKey(formPropertyHandler.getId()); 
       // submitFormProperty will remove all the keys which it takes care of
-      formPropertyHandler.submitFormProperty(execution, propertiesCopy);
+      Object valueSubmitted = formPropertyHandler.submitFormProperty(execution, propertiesCopy);
+      if (shouldReport) {
+        propertiesSubmitted.put(formPropertyHandler.getId(), valueSubmitted);
+      }
     }
+    
     for (String propertyId: propertiesCopy.keySet()) {
-      execution.setVariable(propertyId, propertiesCopy.get(propertyId));
+      String propertyValue = propertiesCopy.get(propertyId);
+      execution.setVariable(propertyId, propertyValue);
+      propertiesSubmitted.put(propertyId, propertyValue);
     }
+    
+    return propertiesSubmitted;
   }
 
 

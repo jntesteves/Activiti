@@ -37,8 +37,8 @@ public class HistoricFormPropertiesResource extends SecuredResource {
       for (HistoricDetail historicDetail : list) {
         HistoricFormProperty property = (HistoricFormProperty)historicDetail;
         ObjectNode propertyJSON = new ObjectMapper().createObjectNode();
-        propertyJSON.put("id", property.getPropertyId());
-        propertyJSON.put("value", property.getPropertyValue());
+        propertyJSON.put("id", property.getVariableName());
+        propertyJSON.put("value", property.getValue().toString());
         propertiesJSON.add(propertyJSON);
       }
     }

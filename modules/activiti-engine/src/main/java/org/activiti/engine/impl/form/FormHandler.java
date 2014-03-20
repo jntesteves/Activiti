@@ -13,8 +13,8 @@
 
 package org.activiti.engine.impl.form;
 
-import java.util.List;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;
@@ -32,5 +32,5 @@ public interface FormHandler extends Serializable {
 
   void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition);
 
-  void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
+  Map<String, Object> submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

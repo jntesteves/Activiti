@@ -73,7 +73,7 @@ public class FormPropertyHandler {
     return formProperty;
   }
 
-  public void submitFormProperty(ExecutionEntity execution, Map<String, String> properties) {
+  public Object submitFormProperty(ExecutionEntity execution, Map<String, String> properties) {
     if (!isWritable && properties.containsKey(id)) {
       throw new ActivitiException("form property '"+id+"' is not writable");
     }
@@ -110,6 +110,9 @@ public class FormPropertyHandler {
         execution.setVariable(id, modelValue);
       }
     }
+    
+    return modelValue;
+    
   }
 
   // getters and setters //////////////////////////////////////////////////////

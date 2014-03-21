@@ -1,4 +1,4 @@
 alter table ACT_RU_TASK 
     add CATEGORY_ NVARCHAR2(255);
 
-update ACT_GE_PROPERTY set VALUE_ = '5.15.9-SIMULATION' where NAME_ = 'schema.version';
+update ACT_GE_PROPERTY set VALUE_ = '5.15.10-SIMULATION' where NAME_ = 'schema.version';

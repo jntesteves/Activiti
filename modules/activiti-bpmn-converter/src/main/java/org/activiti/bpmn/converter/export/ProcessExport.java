@@ -27,12 +27,15 @@ public class ProcessExport implements BpmnXMLConstants {
   /**
    * default attributes taken from process instance attributes
    */
-  public static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(
-          new ExtensionAttribute(ATTRIBUTE_ID)
-          ,new ExtensionAttribute(ATTRIBUTE_NAME)
-          ,new ExtensionAttribute(ATTRIBUTE_PROCESS_EXECUTABLE)
-      );
+  public static final List<ExtensionAttribute> defaultProcessAttributes = Arrays.asList(
+      new ExtensionAttribute(ATTRIBUTE_ID),
+      new ExtensionAttribute(ATTRIBUTE_NAME),
+      new ExtensionAttribute(ATTRIBUTE_PROCESS_EXECUTABLE),
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_USERS),
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_PROCESS_CANDIDATE_GROUPS)
+  );
 
+  @SuppressWarnings("unchecked")
   public static void writeProcess(Process process, XMLStreamWriter xtw) throws Exception {
     // start process element
     xtw.writeStartElement(ELEMENT_PROCESS);
@@ -55,7 +58,7 @@ public class ProcessExport implements BpmnXMLConstants {
     }
 
     // write custom attributes
-    BpmnXMLUtil.writeAttribute(process.getAttributes().values(), xtw, defaultAttributes);
+    BpmnXMLUtil.writeCustomAttributes(process.getAttributes().values(), xtw, defaultProcessAttributes);
 
     if (StringUtils.isNotEmpty(process.getDocumentation())) {
 

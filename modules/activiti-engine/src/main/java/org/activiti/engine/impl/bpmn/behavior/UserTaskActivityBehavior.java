@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
@@ -104,6 +105,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     	}
     }
     
+    if (taskDefinition.getFormKeyExpression() != null) {
+    	final Object formKey = (String) taskDefinition.getFormKeyExpression().getValue(execution);
+    	if (formKey != null) {
+    		if (formKey instanceof String) {
+    			task.setFormKey((String) formKey);
+    		} else {
+    			 throw new ActivitiIllegalArgumentException("FormKey expression does not resolve to a string: " + 
+               taskDefinition.getFormKeyExpression().getExpressionText());
+    		}
+    	}
+    }
+    
     handleAssignments(task, execution);
    
     // All properties set, now firing 'create' event
@@ -111,13 +124,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    if (((ExecutionEntity) execution).getTasks().size() != 0)
+      throw new ActivitiException("UserTask should not be signalled before complete");
     leave(execution);
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
-      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution));
+      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution), true, false);
     }
     
     if (taskDefinition.getOwnerExpression() != null) {

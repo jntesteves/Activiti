@@ -17,6 +17,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
 import org.activiti.bpmn.converter.child.ProcessResourceParser;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -47,6 +48,8 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
           new ExecutionListenerParser().parseChildElement(xtr, parentElement, model);
         } else if (ELEMENT_PROCESS_RESOURCE.equals(xtr.getLocalName())) {
        	  new ProcessResourceParser().parseChildElement(xtr, parentElement, model);
+        } else if(ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())){
+        	new ActivitiEventListenerParser().parseChildElement(xtr, parentElement, model);
         } else {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
           parentElement.addExtensionElement(extensionElement);

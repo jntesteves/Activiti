@@ -16,6 +16,7 @@ package org.activiti.bpmn.model;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class SequenceFlow extends FlowElement {
 
@@ -23,6 +24,15 @@ public class SequenceFlow extends FlowElement {
   protected String sourceRef;
   protected String targetRef;
   protected String probability;
+  
+  public SequenceFlow() {
+  	
+  }
+  
+  public SequenceFlow(String sourceRef, String targetRef) {
+  	this.sourceRef = sourceRef;
+  	this.targetRef = targetRef;
+  }
 
   public String getConditionExpression() {
     return conditionExpression;

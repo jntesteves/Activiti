@@ -52,7 +52,7 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.executionId = execution.getId();
     this.taskId = taskId;
     this.name = name;
-    this.time = ClockUtil.getCurrentTime();
+    this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     
     variableType = Context
             .getProcessEngineConfiguration()

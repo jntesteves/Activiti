@@ -14,8 +14,11 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -23,7 +26,6 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.repository.Deployment;
 
 /**
@@ -42,7 +44,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
   public Deployment execute(CommandContext commandContext) {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
-    deployment.setDeploymentTime(ClockUtil.getCurrentTime());
+    deployment.setDeploymentTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
 
     if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
       DeploymentEntity existingDeployment = Context
@@ -64,14 +66,29 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       .getDeploymentEntityManager()
       .insertDeployment(deployment);
     
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+    }
+    
+    // Deployment settings
+    Map<String, Object> deploymentSettings = new HashMap<String, Object>();
+    deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
+    deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+    
     // Actually deploy
     Context
       .getProcessEngineConfiguration()
       .getDeploymentManager()
-      .deploy(deployment);
+      .deploy(deployment, deploymentSettings);
     
     if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
       scheduleProcessDefinitionActivation(commandContext, deployment);
+    }
+    
+    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+	    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
     }
     
     return deployment;
@@ -109,12 +126,12 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       
       // If activation date is set, we first suspend all the process definition
       SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null);
+              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
       suspendProcessDefinitionCmd.execute(commandContext);
       
       // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =
-              new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate());
+      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =new ActivateProcessDefinitionCmd(
+      		processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(), deployment.getTenantId());
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }

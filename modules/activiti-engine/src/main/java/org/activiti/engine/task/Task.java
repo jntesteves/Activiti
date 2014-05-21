@@ -108,6 +108,15 @@ public interface Task {
   /** Indicated whether this task is suspended or not. */
   boolean isSuspended();
   
+  /** The tenant identifier of this task */
+  String getTenantId();
+  
+  /** The form key for the user task */
+  String getFormKey();
+  
+  /** Change the form key of the task */
+  void setFormKey(String formKey);
+  
   /** Returns the local task variables if requested in the task query */
   Map<String, Object> getTaskLocalVariables();
   

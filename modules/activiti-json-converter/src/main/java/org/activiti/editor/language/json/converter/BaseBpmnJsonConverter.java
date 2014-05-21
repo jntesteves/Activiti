@@ -46,12 +46,13 @@ import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -185,14 +186,28 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       String multiInstanceCardinality = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CARDINALITY, elementNode);
       String multiInstanceCollection = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_COLLECTION, elementNode);
       String multiInstanceCondition = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_CONDITION, elementNode);
+      String multiInstanceLoopType = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_LOOP_TYPE, elementNode);
       
       if (StringUtils.isNotEmpty(multiInstanceCardinality) || StringUtils.isNotEmpty(multiInstanceCollection) ||
-          StringUtils.isNotEmpty(multiInstanceCondition)) {
+          StringUtils.isNotEmpty(multiInstanceCondition) || StringUtils.isNotEmpty(multiInstanceLoopType)) {
         
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
         multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
+        
+        // There is another property used for multi-instance sequential control, that is used for rendering the correct
+        // BPMN loop symbol on the task. In case this is set, also take that into account.
+        
+        if(multiInstanceLoopType != null) {
+        	if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(true);
+        	} else if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL.equals(multiInstanceLoopType)) {
+        		multiInstanceObject.setSequential(false);
+        	}
+        }
+        
+        
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);

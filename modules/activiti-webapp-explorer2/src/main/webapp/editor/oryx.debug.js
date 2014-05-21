@@ -97,8 +97,6 @@ XMLNS = {
 	SCHEMA: ""
 };
 
-//TODO kann kickstart sich vielleicht auch um die erzeugung von paketen/
-// namespaces k�mmern? z.b. requireNamespace("ORYX.Core.SVG");
 var Kickstart = {
  	started: false,
 	callbacks: [],
@@ -2240,6 +2238,7 @@ ORYX = Object.extend(ORYX, {
 			messageParts[0] = (new Date()).getTime() + " "
 				+ prefix + " " + messageParts[0];
 			var message = printf.apply(null, messageParts);
+			
 			
 			ORYX.Log.__appenders.each(function(appender) {
 				appender.append(message);
@@ -11565,8 +11564,7 @@ ORYX.Editor = {
 			
 			var content =  "<div id='editor_header'>" +
                 "<div id='header_logo_image'>" +                
-                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\" usemap=\"#kisbpmmap\"/>" + 
-                    "<map id=\"kisbpmmap\" name=\"kisbpmmap\"><area shape=\"rect\" alt=\"kisbpm.com\" title=\"kisbpm.com\" coords=\"15,2,322,44\" href=\"http://kisbpm.com\" target=\"_blank\" /></map>" +
+                    "<img src='../explorer/src/img/signavio/smoky/logo2.png' border=\"0\"/>" +
                 "</div>" +
                 "<span class='openid " + (publicText == user ? "not" : "") + "'>" + 
                   (unescape(user)) + 
@@ -15497,11 +15495,12 @@ ORYX.Core.Node = {
 		
         var svgNode = svgDocument.getElementsByTagName("g")[0]; //outer most g node
         // set all required attributes
-        var attributeTitle = svgDocument.ownerDocument.createAttributeNS(null, "title");
+        
+        var attributeTitle = svgDocument.ownerDocument.createAttribute("title");
         attributeTitle.nodeValue = this.getStencil().title();
         svgNode.setAttributeNode(attributeTitle);
         
-        var attributeId = svgDocument.ownerDocument.createAttributeNS(null, "id");
+        var attributeId = svgDocument.ownerDocument.createAttribute("id");
         attributeId.nodeValue = this.id;
         svgNode.setAttributeNode(attributeId);
         
@@ -29522,24 +29521,28 @@ new function(){
 	
 	
 }()
-/*******************************************************************************
- * Signavio Core Components
- * Copyright (C) 2012  Signavio GmbH
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- ******************************************************************************/
-
+/**
+ * Copyright (c) 2009
+ * Sven Wagner-Boysen, Willi Tscheschner
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ **/
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -30031,7 +30034,7 @@ new function(){
 				width = this.adjustWidth(lanes, pool.bounds.width());		
 			}
 			
-			/**???
+			/**‚
 			 * Set width/height depending on containing lanes
 			 */		
 			else {

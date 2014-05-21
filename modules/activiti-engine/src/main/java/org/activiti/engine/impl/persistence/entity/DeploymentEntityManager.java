@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -24,9 +27,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
-
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -78,6 +78,9 @@ public class DeploymentEntityManager extends AbstractManager {
       String processDefinitionId = processDefinition.getId();
       // remove related authorization parameters in IdentityLink table
       getIdentityLinkManager().deleteIdentityLinksByProcDef(processDefinitionId);
+      
+      // event subscriptions
+      getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
     }
 
     // delete process definitions from db
@@ -109,14 +112,13 @@ public class DeploymentEntityManager extends AbstractManager {
             ((JobEntity)job).delete();        
           }
         }
-       
       }
       
       // remove message event subscriptions:
       List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
         .getCommandContext()
         .getEventSubscriptionEntityManager()
-        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId());
+        .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
       for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
         eventSubscriptionEntity.delete();        
       }
@@ -151,7 +153,6 @@ public class DeploymentEntityManager extends AbstractManager {
     return getDbSqlSession().selectList(query, deploymentQuery, page);
   }
   
-  @SuppressWarnings("unchecked")
   public List<String> getDeploymentResourceNames(String deploymentId) {
     return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
   }

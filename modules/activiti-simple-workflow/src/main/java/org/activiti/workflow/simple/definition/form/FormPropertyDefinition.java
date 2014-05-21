@@ -15,11 +15,11 @@ package org.activiti.workflow.simple.definition.form;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.As;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 /**
  * Defines one property in a {@link FormDefinition}.
@@ -31,8 +31,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 public abstract class FormPropertyDefinition {
 
   protected String name;
+  protected String displayName;
   protected boolean mandatory;
   protected boolean writable;
+  protected String type;
+  protected String value;
   
   protected Map<String, Object> parameters = new HashMap<String, Object>(); 
   
@@ -44,7 +47,15 @@ public abstract class FormPropertyDefinition {
     this.name = propertyName;
   }
 
-  public boolean isMandatory() {
+  public String getDisplayName() {
+	return displayName;
+  }
+
+  public void setDisplayName(String displayName) {
+	this.displayName = displayName;
+  }
+
+public boolean isMandatory() {
     return mandatory;
   }
 
@@ -60,7 +71,24 @@ public abstract class FormPropertyDefinition {
 	  this.writable = writable;
   }
   
-  public void setParameters(Map<String, Object> parameters) {
+  public String getType() {
+	return type;
+  }
+
+  public void setType(String type) {
+	this.type = type;
+  }
+  
+  
+  public String getValue() {
+	return value;
+  }
+
+  public void setValue(String value) {
+	this.value = value;
+  }
+
+public void setParameters(Map<String, Object> parameters) {
 	  this.parameters = parameters;
   }
   
@@ -75,7 +103,7 @@ public abstract class FormPropertyDefinition {
   public abstract FormPropertyDefinition clone();
   
   /**
-   * Sets the properties of this {@link ProcessDefinition} instance based in the
+   * Sets the properties of this {@link FormPropertyDefinition} instance based in the
    * properties present in the given definition. 
    */
   public abstract void setValues(FormPropertyDefinition otherDefinition);

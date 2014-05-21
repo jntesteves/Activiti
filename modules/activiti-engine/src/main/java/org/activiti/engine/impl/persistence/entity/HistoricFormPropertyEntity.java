@@ -15,7 +15,6 @@ package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.util.ClockUtil;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;

@@ -497,6 +497,64 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return executionListeners;
   }
   
+  private List<EventListener> convertJsonToEventListeners(JsonNode listenersNode) {
+    List<EventListener> eventListeners = new ArrayList<EventListener>();
+    if (StringUtils.isEmpty(listenersNode.asText())) return eventListeners;
+    try {
+      listenersNode = objectMapper.readTree(listenersNode.asText());
+    } catch (Exception e) {
+      LOGGER.info("Event listeners node can not be read", e);
+    }
+      
+    JsonNode itemsArrayNode = listenersNode.get(EDITOR_PROPERTIES_GENERAL_ITEMS);
+    if (itemsArrayNode != null) {
+      for (JsonNode itemNode : itemsArrayNode) {
+        EventListener listener = new EventListener();
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_EVENTS, itemNode)) {
+          listener.setEvents(itemNode.get(PROPERTY_EVENT_LISTENER_EVENTS).asText());
+        }
+        
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_ENTITY_TYPE, itemNode)) {
+          listener.setEntityType(itemNode.get(PROPERTY_EVENT_LISTENER_ENTITY_TYPE).asText());
+        }
+        
+        if (isNotEmpty(PROPERTY_EVENT_LISTENER_CLASS, itemNode)) {
+          listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+          listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_CLASS).asText());
+        } else if (isNotEmpty(PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION, itemNode)) {
+          listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION);
+          listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_DELEGATEEXPRESSION).asText());
+        } else if (isNotEmpty(PROPERTY_EVENT_LISTENER_THROW_EVENT, itemNode)) {
+          String throwEventType = itemNode.get(PROPERTY_EVENT_LISTENER_THROW_EVENT).asText();
+          if(PROPERTY_EVENT_LISTENER_THROW_SIGNAL.equals(throwEventType)) {
+            listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT);
+          } else if(PROPERTY_EVENT_LISTENER_THROW_GLOBAL_SIGNAL.equals(throwEventType)) {
+            listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT);
+          } else if(PROPERTY_EVENT_LISTENER_THROW_MESSAGE.equals(throwEventType)) {
+            listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT);
+          } else if(PROPERTY_EVENT_LISTENER_THROW_ERROR.equals(throwEventType)) {
+            listener.setImplementation(itemNode.get(PROPERTY_EVENT_LISTENER_THROW_REFERENCE).asText());
+            listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
+          } else {
+            // Not a valid throw event type, ignore this listener definition
+            listener = null;
+          }
+        } else {
+          // No properties have been provided to have a valid implementation
+          listener = null;
+        }
+
+        if(listener != null) {
+          eventListeners.add(listener);
+        }
+      }
+    }
+    return eventListeners;
+  }
+  
   private List<ProcessResource> convertJsonToResources(JsonNode resourcesNode) {
     List<ProcessResource> processResources = new ArrayList<ProcessResource>();
       

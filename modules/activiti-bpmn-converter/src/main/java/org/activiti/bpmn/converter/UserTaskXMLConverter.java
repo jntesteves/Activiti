@@ -128,7 +128,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     UserTask userTask = (UserTask) element;
-    writeUserTaskResources(userTask, xtw);
+    writeUserTaskResources(userTask, didWriteExtensionStartElement, xtw);
     didWriteExtensionStartElement = writeFormProperties(userTask, didWriteExtensionStartElement, xtw);
     return didWriteExtensionStartElement;
   }

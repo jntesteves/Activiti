@@ -217,8 +217,8 @@ public interface HistoryManager extends Session {
 	/**
 	 * Report form properties submitted, if audit history is enabled.
 	 */
-	public abstract void reportFormPropertiesSubmitted(
-			ExecutionEntity processInstance, Map<String, String> properties,
+	public abstract void recordFormPropertiesSubmitted(
+			ExecutionEntity processInstance, Map<String, Object> properties,
 			String taskId);
 
 	// Identity link related history

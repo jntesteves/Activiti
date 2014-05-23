@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.16-SNAPSHOT', 1);
+values ('schema.version', '5.16-ICO', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.16-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.16-ICO)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -127,7 +127,7 @@ create table ACT_RU_TASK (
     CATEGORY_ varchar(255),
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
-    FORM_KEY_ varchar(255),
+    FORM_KEY_ varchar(2000),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

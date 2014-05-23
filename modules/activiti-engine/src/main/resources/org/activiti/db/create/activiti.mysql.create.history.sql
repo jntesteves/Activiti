@@ -53,7 +53,7 @@ create table ACT_HI_TASKINST (
     DELETE_REASON_ varchar(4000),
     PRIORITY_ integer,
     DUE_DATE_ datetime(3),
-    FORM_KEY_ varchar(255),
+    FORM_KEY_ varchar(2000),
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
     primary key (ID_)

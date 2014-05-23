@@ -3,8 +3,8 @@
 # to get millisecond precision.
 
 
-alter table ACT_RU_TASK 
-    add CATEGORY_ varchar(255);
+-- alter table ACT_RU_TASK 
+--    add CATEGORY_ varchar(255);
     
 alter table ACT_RU_EXECUTION drop foreign key ACT_FK_EXE_PROCDEF;  	
 

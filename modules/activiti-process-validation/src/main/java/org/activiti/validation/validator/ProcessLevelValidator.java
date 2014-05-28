@@ -14,7 +14,9 @@ public abstract class ProcessLevelValidator extends ValidatorImpl {
 	@Override
 	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
 		for (Process process : bpmnModel.getProcesses()) {
-			executeValidation(bpmnModel, process, errors);
+		  if (process.isExecutable()) {
+		    executeValidation(bpmnModel, process, errors);
+		  }
 		}
 	}
 	

@@ -411,6 +411,11 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
          process.setResources(convertJsonToResources(processResourceNode));
       }
       
+      JsonNode processDocumentation = modelNode.get(EDITOR_SHAPE_PROPERTIES).get(PROPERTY_DOCUMENTATION);
+      if (processDocumentation != null && StringUtils.isNotEmpty(processDocumentation.asText())) {
+         process.setDocumentation(processDocumentation.asText());
+      }
+      
       processJsonElements(shapesArrayNode, modelNode, process, shapeMap);
     }
     

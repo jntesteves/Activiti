@@ -21,11 +21,13 @@ import org.activiti.validation.validator.ValidatorSetNames;
 import org.activiti.validation.validator.ValidatorSetFactory;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author jbarrez
  */
+@Ignore
 public class ProcessValidationTest {
 	
 	protected ProcessValidator processValidator;

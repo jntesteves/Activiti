@@ -20,7 +20,9 @@ public class HistoricFormPropertyTest {
   public static final String BPMN_FILE_PATH = "org/activiti/engine/test/history/HistoricFormPropertyTest.binaryProperty.bpmn20.xml";
   
   public class BinaryFormType extends AbstractFormType {
-
+	  
+	private static final long serialVersionUID = 1L;
+	
     public String getName() {
       return "binary";
     }

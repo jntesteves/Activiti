@@ -414,6 +414,7 @@ public class RestResponseFactory {
     result.setId(attachment.getId());
     result.setName(attachment.getName());
     result.setDescription(attachment.getDescription());
+    result.setTime(attachment.getTime());
     result.setType(attachment.getType());
     
     if(attachment.getUrl() == null && attachment.getTaskId() != null) {

@@ -48,7 +48,7 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
       .recordFormPropertiesSubmitted(task.getExecution(), propertiesSubmitted, taskId);
 
     if (completeTask) {
-      task.complete();
+      task.complete(properties, false);
     }
 
     return null;

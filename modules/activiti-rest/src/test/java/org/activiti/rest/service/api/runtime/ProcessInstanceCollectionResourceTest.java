@@ -14,17 +14,19 @@
 package org.activiti.rest.service.api.runtime;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -34,9 +36,59 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * Test for all REST-operations related to a single Process instance resource.
  * 
  * @author Frederik Heremans
+ * @author Saeid Mirzaei
  */
-public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
+public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCase {
 
+  // check if process instance query with business key with and without includeProcess Variables
+  // related to http://jira.codehaus.org/browse/ACT-1992
+  @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
+  public void testGetProcessInstancesByBusinessKeyAndIncludeVariables() throws Exception {
+  	HashMap<String, Object> variables = new HashMap<String, Object>();
+  	variables.put("myVar1", "myVar1");
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey", variables);
+  	String processId = processInstance.getId();
+
+  	// check that the right process is returned with no variables
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey";
+    
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    
+    JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
+    assertTrue(rootNode.size() > 0 );
+    assertEquals(1, rootNode.get("data").size());
+    JsonNode dataNode = rootNode.get("data").get(0);
+    assertEquals(processId, dataNode.get("id").asText());
+    assertEquals(processInstance.getProcessDefinitionId(), dataNode.get("processDefinitionId").asText());
+    assertTrue(dataNode.get("processDefinitionUrl").asText().contains(processInstance.getProcessDefinitionId()));
+    JsonNode variableNodes = dataNode.get("variables");
+    assertEquals(0, variableNodes.size());
+   
+    
+    // check that the right process is returned along with the variables when includeProcessvariable is set
+    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION) + "?businessKey=myBusinessKey&includeProcessVariables=true";
+	
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    
+    rootNode = objectMapper.readTree(response.getEntity().getContent());
+    assertTrue(rootNode.size() > 0 );
+    assertEquals(1, rootNode.get("data").size());
+    dataNode = rootNode.get("data").get(0);
+    assertEquals(processId, dataNode.get("id").textValue());
+    assertEquals(processInstance.getProcessDefinitionId(), dataNode.get("processDefinitionId").asText());
+    assertTrue(dataNode.get("processDefinitionUrl").asText().contains(processInstance.getProcessDefinitionId()));
+    variableNodes = dataNode.get("variables");
+    assertEquals(1, variableNodes.size());
+    
+    variableNodes = dataNode.get("variables");
+    assertEquals(variableNodes.size(), 1);
+    assertNotNull(variableNodes.get(0).get("name"));
+    assertNotNull(variableNodes.get(0).get("value"));
+   
+    assertEquals("myVar1", variableNodes.get(0).get("name").asText());
+    assertEquals("myVar1", variableNodes.get(0).get("value").asText());
+  }
+	
   /**
    * Test getting a list of process instance, using all possible filters.
    */
@@ -162,18 +214,20 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
    */
   @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
   public void testStartProcess() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Start using process definition key
     requestNode.put("processDefinitionKey", "processOne");
-    Representation response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertNotNull(processInstance);
     
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
@@ -183,20 +237,20 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
     runtimeService.deleteProcessInstance(processInstance.getId(), "testing");
     
     // Start using process definition id
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", repositoryService.createProcessDefinitionQuery()
             .processDefinitionKey("processOne").singleResult().getId());
-    response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
     processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertNotNull(processInstance);
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
@@ -206,19 +260,19 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
     runtimeService.deleteProcessInstance(processInstance.getId(), "testing");
     
     // Start using message
     requestNode = objectMapper.createObjectNode();
     requestNode.put("message", "newInvoiceMessage");
-    response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
     processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertNotNull(processInstance);
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("businessKey").isNull());
@@ -228,17 +282,17 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
     
     // Start using process definition id and business key
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", repositoryService.createProcessDefinitionQuery()
             .processDefinitionKey("processOne").singleResult().getId());
     requestNode.put("businessKey", "myBusinessKey");
-    response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
   }
@@ -290,17 +344,18 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     dateVarNode.put("value", isoString);
     dateVarNode.put("type", "date");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Start using process definition key, passing in variables
     requestNode.put("processDefinitionKey", "processOne");
     requestNode.put("variables", variablesNode);
     
-    client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
-    JsonNode responseNode = objectMapper.readTree(client.getResponseEntity().getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals("processTask", responseNode.get("activityId").asText());
     assertEquals(false, responseNode.get("ended").asBoolean());
     JsonNode variablesArrayNode = responseNode.get("variables");
@@ -319,7 +374,7 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     assertEquals(4567890L, processVariables.get("longVariable"));
     assertEquals(123.456, processVariables.get("doubleVariable"));
     assertEquals(Boolean.TRUE, processVariables.get("booleanVariable"));
-    assertEquals(varCal.getTime(), processVariables.get("dateVariable"));
+    assertEquals(dateFormat.parse(isoString), processVariables.get("dateVariable"));
   }
   
   /**
@@ -340,7 +395,6 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     integerVarNode.put("value", 1234);
     integerVarNode.put("type", "integer");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Start using process definition key, passing in variables
@@ -348,10 +402,12 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     requestNode.put("returnVariables", true);
     requestNode.put("variables", variablesNode);
     
-    client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
-    JsonNode responseNode = objectMapper.readTree(client.getResponseEntity().getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals("processTask", responseNode.get("activityId").asText());
     assertEquals(false, responseNode.get("ended").asBoolean());
     JsonNode variablesArrayNode = responseNode.get("variables");
@@ -392,32 +448,28 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
   			.tenantId("tenant1")
   			.deploy();
   	
-  	ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
-    ObjectNode requestNode = objectMapper.createObjectNode();
+  	ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Start using process definition key, in tenant 1
     requestNode.put("processDefinitionKey", "oneTaskProcess");
     requestNode.put("tenantId", "tenant1");
     
-    Representation response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
     // Only one process should have been started
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
     assertNotNull(processInstance);
     assertEquals("tenant1", processInstance.getTenantId());
-    response.release();
     
     // Start using an unexisting tenant
     requestNode.put("processDefinitionKey", "oneTaskProcess");
     requestNode.put("tenantId", "tenantThatDoesntExist");
     
-    try {
-    	response = client.post(requestNode);
-    } catch(ResourceException re) {
-    	assertEquals(Status.CLIENT_ERROR_BAD_REQUEST.getCode(), re.getStatus().getCode());
-    }
-    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
   	} finally {
   		// Cleanup deployment in tenant
@@ -435,75 +487,46 @@ public class ProcessInstanceCollectionResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Try starting without id and key
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Either processDefinitionId, processDefinitionKey or message is required.", expected.getStatus().getDescription());
-    }
-    client.release();
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Try starting with both id and key
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", "123");
     requestNode.put("processDefinitionKey", "456");
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Only one of processDefinitionId, processDefinitionKey or message should be set.", expected.getStatus().getDescription());
-    }
-    client.release();
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Try starting with both message and key
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", "123");
     requestNode.put("message", "456");
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Only one of processDefinitionId, processDefinitionKey or message should be set.", expected.getStatus().getDescription());
-    }
-    client.release();
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Try starting with unexisting process definition key
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionKey", "123");
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("no processes deployed with key '123'", expected.getStatus().getDescription());
-    }
-    client.release();
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Try starting with unexisting process definition id
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", "123");
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("no deployed process definition found with id '123'", expected.getStatus().getDescription());
-    }
-    client.release();
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Try starting with unexisting message
     requestNode = objectMapper.createObjectNode();
     requestNode.put("message", "unexistingmessage");
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Cannot start process instance by message: no subscription to message with name 'unexistingmessage' found.", expected.getStatus().getDescription());
-    }
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
   }
 }

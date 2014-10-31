@@ -273,7 +273,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         try {
           in.close();
         } catch (IOException e) {
-          LOGGER.info("Problem closing BPMN input stream", e);
+          LOGGER.debug("Problem closing BPMN input stream", e);
         }
       }
     }
@@ -291,7 +291,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				try {
 					xtr.next();
 				} catch(Exception e) {
-					LOGGER.error("Error reading XML document", e);
+					LOGGER.debug("Error reading XML document", e);
 					throw new XMLException("Error reading XML", e);
 				}
 				
@@ -363,7 +363,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				} else if (ELEMENT_DOCUMENTATION.equals(xtr.getLocalName())) {
 					
 					BaseElement parentElement = null;
-					if(activeSubProcessList.size() > 0) {
+					if(!activeSubProcessList.isEmpty()) {
 						parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
 					} else if(activeProcess != null) {
 						parentElement = activeProcess;
@@ -383,8 +383,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           model.getGlobalArtifacts().add(association);
 				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-					if (activePool != null)	new ExtensionElementsParser().parse(xtr, activeSubProcessList, activePool, model);
-					else new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
+					new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
 				} else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
           subProcessParser.parse(xtr, activeSubProcessList, activeProcess);
           
@@ -399,7 +398,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
 				} else {
 
-					if (activeSubProcessList.size() > 0 && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
+					if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 						
 						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 					  
@@ -421,7 +420,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 			  }
 			  processFlowElements(process.getFlowElements(), process);
 			}
-
+		
+		} catch (XMLException e) {
+		  throw e;
+		  
 		} catch (Exception e) {
 			LOGGER.error("Error processing BPMN document", e);
 			throw new XMLException("Error processing BPMN document", e);
@@ -488,7 +490,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       
       for (Process process : model.getProcesses()) {
         
-        if(process.getFlowElements().size() == 0 && process.getLanes().size() == 0) {
+        if(process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
           // empty process, ignore it 
           continue;
         }
@@ -551,11 +553,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
       }
       
-      boolean wroteListener = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
-      if (wroteListener) {
+      boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(subProcess, false, xtw);
+      
+      didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(subProcess, didWriteExtensionStartElement, model.getNamespaces(), xtw);
+      if (didWriteExtensionStartElement) {
         // closing extensions element
         xtw.writeEndElement();
       }
+      
       MultiInstanceExport.writeMultiInstance(subProcess, xtw);
       
       for (FlowElement subElement : subProcess.getFlowElements()) {

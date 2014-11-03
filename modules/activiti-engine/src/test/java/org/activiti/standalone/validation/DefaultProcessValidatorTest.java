@@ -49,7 +49,7 @@ public class DefaultProcessValidatorTest {
 		this.processValidator = processValidatorFactory.createDefaultProcessValidator();
 	}
 	
-	@Test
+	@Test @Ignore
 	public void verifyValidation() throws Exception {
 		
 		InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream("org/activiti/engine/test/validation/invalidProcess.bpmn20.xml");

@@ -384,7 +384,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     return didWriteExtensionStartElement;
   }
   
-  protected void writeUserTaskResources(FlowElement flowElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+  protected boolean writeUserTaskResources(FlowElement flowElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
 
 	  List<UserTaskResource> resourceList = null;
 	  if (flowElement instanceof UserTask) {
@@ -410,6 +410,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 			  }
 		  }
 	  }
+	  return didWriteExtensionStartElement;
   }
   
   protected boolean writeListeners(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {

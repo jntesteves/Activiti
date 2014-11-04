@@ -20,9 +20,13 @@ import org.activiti.bpmn.model.ProcessResource;
 
 public class ProcessResourceExport implements BpmnXMLConstants {
 
-	public static void writeProcessResources(Process process, XMLStreamWriter xtw) throws Exception {
-		if (process.getResources().size() > 0){
-		    xtw.writeStartElement(ELEMENT_EXTENSIONS);
+	public static boolean writeProcessResources(Process process, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+		if (process.getResources().size() > 0) {
+		
+      if (!didWriteExtensionStartElement) { 
+        xtw.writeStartElement(ELEMENT_EXTENSIONS);
+        didWriteExtensionStartElement = true;
+      }
 		  
 			for (ProcessResource resource : process.getResources()) {
 				xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_PROCESS_RESOURCE, ACTIVITI_EXTENSIONS_NAMESPACE);
@@ -35,7 +39,8 @@ public class ProcessResourceExport implements BpmnXMLConstants {
 				xtw.writeEndElement();
 			}
 			
-			xtw.writeEndElement();
 		}
+		
+		return didWriteExtensionStartElement;
 	}
 }

@@ -68,6 +68,7 @@ public class ProcessExport implements BpmnXMLConstants {
     }
     
     boolean didWriteExtensionStartElement = ActivitiListenerExport.writeListeners(process, false, xtw);
+    didWriteExtensionStartElement = ProcessResourceExport.writeProcessResources(process, didWriteExtensionStartElement, xtw);
     didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(process, didWriteExtensionStartElement, xtw);
     
     if (didWriteExtensionStartElement) {
@@ -75,7 +76,6 @@ public class ProcessExport implements BpmnXMLConstants {
       xtw.writeEndElement();
     }
     
-    ProcessResourceExport.writeProcessResources(process, xtw);
     LaneExport.writeLanes(process, xtw);
   }
 }

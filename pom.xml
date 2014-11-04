@@ -874,7 +874,6 @@
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-camel</module>
-        <module>modules/activiti-mule</module>
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>

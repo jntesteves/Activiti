@@ -1,4 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.16.4-ICO</version>
+  <version>5.16.4-ICO.1</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
@@ -748,7 +748,6 @@
         <module>modules/activiti-mule</module>
         <module>modules/activiti-camel</module>
         <module>modules/activiti-cdi</module>
-        <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>
       </modules>
@@ -796,14 +795,14 @@
     <profile>
       <id>check</id>
       <modules>
-        <module>modules/activiti-spring</module>
-        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
         <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
@@ -858,7 +857,6 @@
     <profile>
       <id>distro</id>
       <modules>
-        <module>modules/activiti-spring</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
         <module>modules/activiti-image-generator</module>
@@ -866,6 +864,7 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-diagram-rest</module>
@@ -874,7 +873,6 @@
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
-        <module>modules/activiti-osgi</module>
         <module>modules/activiti-camel</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-cdi</module>

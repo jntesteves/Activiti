@@ -429,6 +429,24 @@
           "title_de" : "Enum",
           "value" : "enum",
           "refToView" : ""
+        }, {
+          "id" : "c6",
+          "title" : "Attachment",
+          "title_de" : "Attachment",
+          "value" : "attachment",
+          "refToView" : ""
+        }, {
+          "id" : "c7",
+          "title" : "Big String",
+          "title_de" : "Big String",
+          "value" : "bigstring",
+          "refToView" : ""
+        }, {
+          "id" : "c8",
+          "title" : "Double",
+          "title_de" : "Double",
+          "value" : "double",
+          "refToView" : ""
         } ]
       }, {
         "id" : "formproperty_expression",
@@ -1292,44 +1310,6 @@
       } ]
     } ]
   }, {
-    "name" : "loopcharacteristics",
-    "properties" : [ {
-      "id" : "looptype",
-      "type" : "Choice",
-      "title" : "Loop type",
-      "value" : "None",
-      "description" : "Repeated activity execution (parallel or sequential) can be displayed through different loop types",
-      "popular" : false,
-      "items" : [ {
-        "id" : "c1",
-        "title" : "None",
-        "title_de" : "Keine Schleife",
-        "value" : "None",
-        "refToView" : "none"
-      }, {
-        "id" : "c2",
-        "title" : "Standard",
-        "title_de" : "Standard",
-        "value" : "Standard",
-        "icon" : "activity/list/looptype.standard.png",
-        "refToView" : "loop"
-      }, {
-        "id" : "c3",
-        "title" : "MI Parallel",
-        "title_de" : "MI parallel",
-        "value" : "Parallel",
-        "icon" : "activity/list/mi.parallel.png",
-        "refToView" : "parallel"
-      }, {
-        "id" : "c4",
-        "title" : "MI Sequential",
-        "title_de" : "MI sequentialisiert",
-        "value" : "Sequential",
-        "icon" : "activity/list/mi.sequential.png",
-        "refToView" : "sequential"
-      } ]
-    } ]
-  }, {
     "name" : "datadefinition",
     "properties" : [ {
       "id" : "dataproperties",
@@ -1518,7 +1498,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskresource", "usertaskassignment", "customidentitylinks", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskresource", "usertaskassignment", "customidentitylinks", "formdefinition", "tasklistenersbase", "asynchronousbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1528,7 +1508,7 @@
     "view" : "activity/servicetask.svg",
     "icon" : "activity/list/type.service.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "servicetaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "servicetaskbase", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1538,7 +1518,7 @@
     "view" : "activity/scripttask.svg",
     "icon" : "activity/list/type.script.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "scripttaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "scripttaskbase", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1548,7 +1528,7 @@
     "view" : "activity/businessruletask.svg",
     "icon" : "activity/list/type.business.rule.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "ruletaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "ruletaskbase", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1558,7 +1538,7 @@
     "view" : "activity/receivetask.svg",
     "icon" : "activity/list/type.receive.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1568,7 +1548,7 @@
     "view" : "activity/manualtask.svg",
     "icon" : "activity/list/type.manual.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1578,7 +1558,7 @@
     "view" : "activity/sendtask.svg",
     "icon" : "activity/list/type.send.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "mailtaskbase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "mailtaskbase", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1588,7 +1568,7 @@
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "datadefinition" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "activity", "datadefinition" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1608,7 +1588,7 @@
     "view" : "activity/callactivity.svg",
     "icon" : "activity/task.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "callactivitybase", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "callactivitybase", "asynchronousbase", "executionlistenersbase", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1711,8 +1691,7 @@
     "groups" : [ "Boundary Events" ],
     "propertyPackages" : [ "elementbase", "baseattributes", "cancelactivityattribute", "messagerefdefinition" ],
     "roles" : [ "sequence_start", "BoundaryEventsMorph", "IntermediateEventOnActivityBoundary" ]
-  },
-  {
+  }, {
     "type" : "node",
     "id" : "CatchTimerEvent",
     "title" : "Intermediate timer catching event",

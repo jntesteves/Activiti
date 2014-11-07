@@ -48,20 +48,20 @@
       "popular" : false
     }, {
       "id" : "process_executable",
-    "type" : "Choice",
-    "title" : "Executable",
-    "value" : "Yes",
-    "description" : "Define if the process is executable.",
-    "popular" : true,
-    "items" : [ {
-      "id" : "no",
-      "title" : "No",
-      "value" : "No"
-    }, {
-      "id" : "yes",
-      "title" : "Yes",
-      "value" : "Yes"
-    }]
+	  "type" : "Choice",
+	  "title" : "Executable",
+	  "value" : "Yes",
+	  "description" : "Define if the process is executable.",
+	  "popular" : true,
+	  "items" : [ {
+	    "id" : "no",
+	    "title" : "No",
+	    "value" : "No"
+	  }, {
+	    "id" : "yes",
+	    "title" : "Yes",
+	    "value" : "Yes"
+	  }]
     }, {
       "id" : "process_version",
       "type" : "String",
@@ -185,7 +185,7 @@
                                         ]
                       } 
                     ]
-    }, {
+  }, {
     "name" : "usertaskbase",
     "properties" : [ {
       "id" : "formkeydefinition",
@@ -206,7 +206,14 @@
       "type" : "String",
       "title" : "Priority",
       "value" : "",
-      "description" : "Priority of the user task. @",
+      "description" : "Priority of the user task.",
+      "popular" : true
+    }, {
+      "id" : "categoryDefinition",
+      "type" : "String",
+      "title" : "Category",
+      "value" : "",
+      "description" : "Category of the user task.",
       "popular" : true
     }, {
       "id" : "estimatedduration",
@@ -287,6 +294,12 @@
           "title_de" : "PotentialOwner",
           "value" : "candidateGroups",
           "refToView" : ""
+        }, {
+          "id" : "c4",
+          "title" : "Owner",
+          "title_de" : "Owner",
+          "value" : "owner",
+          "refToView" : ""
         } ]
       }, {
         "id" : "resourceassignmentexpr",
@@ -301,6 +314,55 @@
       } ]
     } ]
   }, {
+    "name" : "customidentitylinks",
+    "properties" : [ {
+      "id" : "customidentitylinks",
+      "type" : "Complex",
+      "title" : "Identity Links",
+      "value" : "",
+      "description" : "Custom Assignment definition for the user task",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "identity_type",
+        "name" : "Identity Type",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 80,
+        "optional" : false,
+        "items" : [ {
+          "id" : "c1",
+          "title" : "User",
+          "title_de" : "User",
+          "value" : "user",
+          "refToView" : ""
+        }, {
+          "id" : "c2",
+          "title" : "Group",
+          "title_de" : "Group",
+          "value" : "group",
+          "refToView" : ""
+        }]
+      }, {
+        "id" : "identity_link_type",
+        "name" : "Identity Link Type",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      }, {
+        "id" : "identitylinkexpr",
+        "name" : "Resource assignment expression",
+        "type" : "String",
+        "description" : "This defines the expression used for the resource assignment.",
+        "description_de" : "Definiert den Ausdruck, der fr die Zordung von Ressourcen genutzt wird.",
+        "value" : "",
+        "width" : 200,
+        "optional" : true
+      } ]
+    } ]
+  },  {
     "name" : "formdefinition",
     "properties" : [ {
       "id" : "formproperties",
@@ -1268,6 +1330,79 @@
       } ]
     } ]
   }, {
+    "name" : "datadefinition",
+    "properties" : [ {
+      "id" : "dataproperties",
+      "type" : "Complex",
+      "title" : "Data properties",
+      "value" : "",
+      "description" : "Definition of the data object properties",
+      "popular" : true,
+      "complexItems" : [ {
+        "id" : "dataproperty_id",
+        "name" : "Id",
+        "type" : "String",
+        "description" : "This defines the id for the data object.",
+        "value" : "",
+        "width" : 150,
+        "popular" : true,
+      }, {
+        "id" : "dataproperty_name",
+        "name" : "Name",
+        "type" : "String",
+        "description" : "This defines the name for the data object.",
+        "value" : "",
+        "width" : 150,
+        "popular" : true,
+      }, {
+        "id" : "dataproperty_type",
+        "name" : "Type",
+        "type" : "Choice",
+        "value" : "",
+        "width" : 100,
+        "popular" : true,
+        "items" : [ {
+          "id" : "Boolean",
+          "title" : "Boolean",
+          "value" : "boolean",
+          "refToView" : ""
+        }, {
+          "id" : "Date",
+          "title" : "Date",
+          "value" : "datetime",
+          "refToView" : ""
+        }, {
+          "id" : "Double",
+          "title" : "Double",
+          "value" : "double",
+          "refToView" : ""
+        }, {
+          "id" : "Integer",
+          "title" : "Integer",
+          "value" : "int",
+          "refToView" : ""
+        }, {
+          "id" : "Long",
+          "title" : "Long",
+          "value" : "long",
+          "refToView" : ""
+        }, {
+          "id" : "String",
+          "title" : "String",
+          "value" : "string",
+          "refToView" : ""
+        } ]
+      }, {
+        "id" : "dataproperty_value",
+        "name" : "Value",
+        "type" : "String",
+        "description" : "This defines the value for the data object.",
+        "value" : "",
+        "width" : 200,
+        "popular" : true,
+      } ]
+    } ]
+  }, {
     "name" : "activity",
     "properties" : [ {
       "id" : "multiinstance_sequential",
@@ -1333,7 +1468,7 @@
     "groups" : [ "Diagram" ],
     "mayBeRoot" : true,
     "hide" : true,
-    "propertyPackages" : [ "baseattributes", "processbase", "processresource", "executionlistenersbase" ],
+    "propertyPackages" : [ "baseattributes", "processbase", "processresource", "executionlistenersbase", "eventListener", "datadefinition" ],
     "roles" : [ ]
   }, {
     "type" : "node",
@@ -1383,7 +1518,7 @@
     "view" : "activity/usertask.svg",
     "icon" : "activity/list/type.user.png",
     "groups" : [ "Activities" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskresource", "usertaskassignment", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "usertaskbase", "usertaskresource", "usertaskassignment", "customidentitylinks", "formdefinition", "tasklistenersbase", "asynchronousbase", "loopcharacteristics", "activity" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "ActivitiesMorph", "all" ]
   }, {
     "type" : "node",
@@ -1453,7 +1588,7 @@
     "view" : "activity/subprocess.expanded.svg",
     "icon" : "activity/expanded.subprocess.png",
     "groups" : [ "Structural" ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "asynchronousbase", "executionlistenersbase", "loopcharacteristics", "datadefinition" ],
     "roles" : [ "sequence_start", "Activity", "sequence_end", "all" ]
   }, {
     "type" : "node",
@@ -1658,7 +1793,7 @@
     "layout" : [ {
       "type" : "layout.bpmn2_0.sequenceflow"
     } ],
-    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase" ],
+    "propertyPackages" : [ "elementbase", "baseattributes", "sequenceflowbase", "executionlistenersbase" ],
     "roles" : [ "ConnectingObjectsMorph", "all" ]
   }, {
     "type" : "edge",

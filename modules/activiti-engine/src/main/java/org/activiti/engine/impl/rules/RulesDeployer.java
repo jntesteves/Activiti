@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RulesDeployer implements Deployer {
   
-  private static Logger log = LoggerFactory.getLogger(RulesDeployer.class);
+  private static final Logger log = LoggerFactory.getLogger(RulesDeployer.class);
 
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
 	  

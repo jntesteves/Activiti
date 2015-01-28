@@ -1,6 +1,10 @@
 package org.activiti.spring.boot;
 
-import org.activiti.spring.SpringJobExecutor;
+import java.io.IOException;
+
+import javax.sql.DataSource;
+
+import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -12,39 +16,34 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-
 /**
  * @author Joram Barrez
  * @author Josh Long
  */
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
-@ConditionalOnMissingClass(name = "javax.persistence.EntityManagerFactory")
 public class DataSourceProcessEngineAutoConfiguration {
 
-    @Configuration
-    @EnableConfigurationProperties(ActivitiProperties.class)
-    public static class DataSourceConfiguration
-            extends AbstractProcessEngineAutoConfiguration {
+  @Configuration
+  @ConditionalOnMissingClass(name= "javax.persistence.EntityManagerFactory")
+  @EnableConfigurationProperties(ActivitiProperties.class)
+  public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
 
-        @Bean
-        @ConditionalOnMissingBean
-        public PlatformTransactionManager transactionManager(DataSource dataSource) {
-            return new DataSourceTransactionManager(dataSource);
-        }
-
-        @Bean
-        @ConditionalOnMissingBean
-        public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-                DataSource dataSource,
-                PlatformTransactionManager transactionManager,
-                SpringJobExecutor springJobExecutor) throws IOException {
-          
-            return this.baseSpringProcessEngineConfiguration(
-                    dataSource, transactionManager, springJobExecutor);
-        }
+    @Bean
+    @ConditionalOnMissingBean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+      return new DataSourceTransactionManager(dataSource);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+            DataSource dataSource,
+            PlatformTransactionManager transactionManager,
+            SpringAsyncExecutor springAsyncExecutor) throws IOException {
+      
+      return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
+    }
+  }
 
 }

@@ -6,15 +6,13 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>spring-boot-starters</artifactId>
-        <version>5.16.4-ICO</version>
+        <version>5.17.0</version>
     </parent>
 
     <artifactId>spring-boot-starter-basic</artifactId>
 
 
     <dependencies>
-
-
         <!-- common -->
         <dependency>
             <groupId>org.activiti</groupId>
@@ -43,6 +41,11 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-common-rest</artifactId>
             <optional>true</optional>
         </dependency>
 

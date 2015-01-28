@@ -123,6 +123,8 @@ public class DefaultProcessDiagramCanvas {
   protected static BufferedImage CAMEL_TASK_IMAGE;
   
   protected static BufferedImage TIMER_IMAGE;
+  protected static BufferedImage COMPENSATE_THROW_IMAGE;
+  protected static BufferedImage COMPENSATE_CATCH_IMAGE;
   protected static BufferedImage ERROR_THROW_IMAGE;
   protected static BufferedImage ERROR_CATCH_IMAGE;
   protected static BufferedImage MESSAGE_THROW_IMAGE;
@@ -227,6 +229,8 @@ public class DefaultProcessDiagramCanvas {
       MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/muleTask.png", customClassLoader));
       
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/timer.png", customClassLoader));
+      COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate-throw.png", customClassLoader));
+      COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate.png", customClassLoader));
       ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error-throw.png", customClassLoader));
       ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error.png", customClassLoader));
       MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message-throw.png", customClassLoader));
@@ -423,6 +427,15 @@ public class DefaultProcessDiagramCanvas {
     }
   }
 
+  public void drawCatchingCompensateEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingCompensateEvent(graphicInfo, isInterrupting, scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+
+  public void drawCatchingCompensateEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, COMPENSATE_CATCH_IMAGE, "compensate", scaleFactor);
+  }
+
   public void drawCatchingTimerEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
     drawCatchingTimerEvent(graphicInfo, isInterrupting, scaleFactor);
     drawLabel(name, graphicInfo);
@@ -459,6 +472,10 @@ public class DefaultProcessDiagramCanvas {
     drawLabel(name, graphicInfo);
   }
   
+  public void drawThrowingCompensateEvent(GraphicInfo graphicInfo, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, true, COMPENSATE_THROW_IMAGE, "compensate", scaleFactor);
+  }
+
   public void drawThrowingSignalEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawCatchingEvent(graphicInfo, true, SIGNAL_THROW_IMAGE, "signal", scaleFactor);
   }
@@ -1162,34 +1179,36 @@ public class DefaultProcessDiagramCanvas {
     Shape shapeFirst = createShape(sourceShapeType, sourceGraphicInfo);
     Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
 
-    GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
-    GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
-    if (shapeFirst != null) {
-      graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
-      graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
-    }
-    if (shapeLast != null) {
-      graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
-      graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
-    }
-
-    Point p = null;
-    
-    if (shapeFirst != null) {
-      Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
-      p = getIntersection(shapeFirst, lineFirst);
-      if (p != null) {
-        graphicInfoFirst.setX(p.getX());
-        graphicInfoFirst.setY(p.getY());
+    if (graphicInfoList != null && graphicInfoList.size() > 0) {
+      GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
+      GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
+      if (shapeFirst != null) {
+        graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
+        graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
       }
-    }
-
-    if (shapeLast != null) {
-      Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
-      p = getIntersection(shapeLast, lineLast);
-      if (p != null) {
-        graphicInfoLast.setX(p.getX());
-        graphicInfoLast.setY(p.getY());
+      if (shapeLast != null) {
+        graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
+        graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
+      }
+  
+      Point p = null;
+      
+      if (shapeFirst != null) {
+        Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
+        p = getIntersection(shapeFirst, lineFirst);
+        if (p != null) {
+          graphicInfoFirst.setX(p.getX());
+          graphicInfoFirst.setY(p.getY());
+        }
+      }
+  
+      if (shapeLast != null) {
+        Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
+        p = getIntersection(shapeLast, lineLast);
+        if (p != null) {
+          graphicInfoLast.setX(p.getX());
+          graphicInfoLast.setY(p.getY());
+        }
       }
     }
 

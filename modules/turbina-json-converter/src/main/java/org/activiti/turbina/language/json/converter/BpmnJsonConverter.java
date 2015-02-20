@@ -421,16 +421,17 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         SubProcess subProcess = (SubProcess) flowElement;
         fillSubShapes(subShapesMap, subProcess);
       }
-      
-      if (!subShapesMap.isEmpty()) {
+
+      if (subShapesMap.size() > 0) {
         List<String> removeSubFlowsList = new ArrayList<String>();
-        List<SequenceFlow> sequenceFlowList = process.findFlowElementsOfType(SequenceFlow.class);
-        for (FlowElement flowElement : sequenceFlowList) {
+        for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
           SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-          if (process.getFlowElement(flowElement.getId()) != null && subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
+          if (subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
             SubProcess subProcess = subShapesMap.get(sequenceFlow.getSourceRef());
-            subProcess.addFlowElement(sequenceFlow);
-            removeSubFlowsList.add(sequenceFlow.getId());
+            if (subProcess.getFlowElement(sequenceFlow.getId()) == null) {
+              subProcess.addFlowElement(sequenceFlow);
+              removeSubFlowsList.add(sequenceFlow.getId());
+            }
           }
         }
         for (String flowId : removeSubFlowsList) {
@@ -745,6 +746,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     for (FlowElement flowElement : subProcess.getFlowElements()) {
       if (flowElement instanceof SubProcess) {
         SubProcess childSubProcess = (SubProcess) flowElement;
+        subShapesMap.put(childSubProcess.getId(), subProcess);
         fillSubShapes(subShapesMap, childSubProcess);
       } else {
         subShapesMap.put(flowElement.getId(), subProcess);

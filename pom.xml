@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.17.0-ICO.1</version>
+  <version>5.17.0-ICO.2</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
@@ -917,7 +917,8 @@
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-diagram-rest</module>
-        <module>modules/activiti-explorer</module>
+	<module>modules/activiti-simple-workflow</module>
+	<module>modules/activiti-explorer</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-cdi</module>

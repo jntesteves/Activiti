@@ -510,7 +510,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerFields = PROPERTY_TASK_LISTENER_FIELDS;
       listenerFieldName = PROPERTY_TASK_LISTENER_FIELD_NAME;
       listenerFieldValue = PROPERTY_TASK_LISTENER_FIELD_VALUE;
-      listenerFieldExpression = PROPERTY_TASK_LISTENER_EXPRESSION;
+      listenerFieldExpression = PROPERTY_TASK_LISTENER_FIELD_EXPRESSION;
       
     } else {
       propertyName = PROPERTY_EXECUTION_LISTENERS;
@@ -521,7 +521,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       listenerFields = PROPERTY_EXECUTION_LISTENER_FIELDS;
       listenerFieldName = PROPERTY_EXECUTION_LISTENER_FIELD_NAME;
       listenerFieldValue = PROPERTY_EXECUTION_LISTENER_FIELD_VALUE;
-      listenerFieldExpression = PROPERTY_EXECUTION_LISTENER_EXPRESSION;
+      listenerFieldExpression = PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION;
     }
     
     listenersNode = getProperty(propertyName, objectNode);

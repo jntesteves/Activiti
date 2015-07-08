@@ -113,9 +113,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         if (StringUtils.isNotEmpty(loopDef.getLoopCardinality()) || StringUtils.isNotEmpty(loopDef.getInputDataItem()) ||
             StringUtils.isNotEmpty(loopDef.getCompletionCondition())) {
           
-          if (loopDef.isSequential() == false) {
-            propertiesNode.put(PROPERTY_MULTIINSTANCE_SEQUENTIAL, PROPERTY_VALUE_NO);
-          }
+          propertiesNode.put(PROPERTY_MULTIINSTANCE_SEQUENTIAL, loopDef.isSequential() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
+
           if (StringUtils.isNotEmpty(loopDef.getLoopCardinality())) {
             propertiesNode.put(PROPERTY_MULTIINSTANCE_CARDINALITY, loopDef.getLoopCardinality());
           }
@@ -169,20 +168,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         String multiInstanceVariable = getPropertyValueAsString(PROPERTY_MULTIINSTANCE_VARIABLE, elementNode);
         
         MultiInstanceLoopCharacteristics multiInstanceObject = new MultiInstanceLoopCharacteristics();
-        multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode));
-        
-        // There is another property used for multi-instance sequential control, that is used for rendering the correct
-        // BPMN loop symbol on the task. In case this is set, also take that into account.
-        
-        if(multiInstanceLoopType != null) {
-        	if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_SEQUENTIAL.equals(multiInstanceLoopType)) {
-        		multiInstanceObject.setSequential(true);
-        	} else if(PROPERTY_MULTIINSTANCE_LOOP_TYPE_PARALLEL.equals(multiInstanceLoopType)) {
-        		multiInstanceObject.setSequential(false);
-        	}
-        }
-        
-        
+        multiInstanceObject.setSequential(getPropertyValueAsBoolean(PROPERTY_MULTIINSTANCE_SEQUENTIAL, elementNode, true));
         multiInstanceObject.setLoopCardinality(multiInstanceCardinality);
         multiInstanceObject.setInputDataItem(multiInstanceCollection);
         multiInstanceObject.setElementVariable(multiInstanceVariable);

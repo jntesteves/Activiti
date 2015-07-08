@@ -12,10 +12,12 @@
  */
 package org.activiti.engine.impl.variable;
 
+import java.io.Serializable;
+
 /**
  * @author Tom Baeyens
  */
-public interface VariableType {
+public interface VariableType extends Serializable {
 
   /**
    * name of variable type (limited to 100 characters length)

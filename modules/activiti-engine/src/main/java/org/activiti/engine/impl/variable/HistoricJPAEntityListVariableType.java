@@ -23,6 +23,8 @@ package org.activiti.engine.impl.variable;
  */
 public class HistoricJPAEntityListVariableType extends JPAEntityListVariableType {
 
+  private static final long serialVersionUID = 1L;
+
   private static final HistoricJPAEntityListVariableType INSTANCE = new HistoricJPAEntityListVariableType();
   
   @Override

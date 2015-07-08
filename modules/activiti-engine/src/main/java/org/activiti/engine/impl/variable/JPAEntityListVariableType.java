@@ -22,6 +22,8 @@ import org.activiti.engine.impl.context.Context;
  */
 public class JPAEntityListVariableType implements VariableType, CacheableVariable {
 
+  private static final long serialVersionUID = 1L;
+
   public static final String TYPE_NAME = "jpa-entity-list";
   
   protected JPAEntityMappings mappings;

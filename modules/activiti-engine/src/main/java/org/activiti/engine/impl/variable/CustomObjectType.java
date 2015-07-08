@@ -19,6 +19,8 @@ package org.activiti.engine.impl.variable;
  * @author Esteban Robles Luna
  */
 public class CustomObjectType implements VariableType {
+
+  private static final long serialVersionUID = 1L;
   
   protected String typeName;
   protected Class<?> theClass;

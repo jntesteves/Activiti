@@ -20,6 +20,8 @@ import java.util.Date;
  */
 public class DateType implements VariableType {
 
+  private static final long serialVersionUID = 1L;
+
   public String getTypeName() {
     return "date";
   }

@@ -12,13 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 
 /**
@@ -293,7 +289,7 @@ public class BpmnModel {
   }
   
   public void addSignal(Signal signal) {
-    if (signal != null) {
+    if (signal != null && StringUtils.isNotEmpty(signal.getId())) {
     	signals.add(signal);
     }
   }

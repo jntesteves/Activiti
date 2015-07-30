@@ -590,51 +590,37 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     String timeCycle = getPropertyValueAsString(PROPERTY_TIMER_CYCLE, objectNode);
     String timeDuration = getPropertyValueAsString(PROPERTY_TIMER_DURATON, objectNode);
     
-    if (StringUtils.isNotEmpty(timeDate) || StringUtils.isNotEmpty(timeCycle) || StringUtils.isNotEmpty(timeDuration)) {
-    
-      TimerEventDefinition eventDefinition = new TimerEventDefinition();
-      if (StringUtils.isNotEmpty(timeDate)) {
-        eventDefinition.setTimeDate(timeDate);
-        
-      } else if (StringUtils.isNotEmpty(timeCycle)) {
-        eventDefinition.setTimeCycle(timeCycle);
-        
-      } else if (StringUtils.isNotEmpty(timeDuration)) {
-        eventDefinition.setTimeDuration(timeDuration);
-      }
-      
-      event.getEventDefinitions().add(eventDefinition);
+    TimerEventDefinition eventDefinition = new TimerEventDefinition();
+    if (StringUtils.isNotEmpty(timeDate)) {
+      eventDefinition.setTimeDate(timeDate);
+    } else if (StringUtils.isNotEmpty(timeCycle)) {
+      eventDefinition.setTimeCycle(timeCycle);
+    } else if (StringUtils.isNotEmpty(timeDuration)) {
+      eventDefinition.setTimeDuration(timeDuration);
     }
+
+    event.getEventDefinitions().add(eventDefinition);
   }
   
   protected void convertJsonToSignalDefinition(JsonNode objectNode, Event event) {
     String signalRef = getPropertyValueAsString(PROPERTY_SIGNALREF, objectNode);
-    
-    if (StringUtils.isNotEmpty(signalRef)) {
-      SignalEventDefinition eventDefinition = new SignalEventDefinition();
-      eventDefinition.setSignalRef(signalRef);
-      event.getEventDefinitions().add(eventDefinition);
-    }
+    SignalEventDefinition eventDefinition = new SignalEventDefinition();
+    eventDefinition.setSignalRef(signalRef);
+    event.getEventDefinitions().add(eventDefinition);
   }
   
   protected void convertJsonToMessageDefinition(JsonNode objectNode, Event event) {
     String messageRef = getPropertyValueAsString(PROPERTY_MESSAGEREF, objectNode);
-    
-    if (StringUtils.isNotEmpty(messageRef)) {
-      MessageEventDefinition eventDefinition = new MessageEventDefinition();
-      eventDefinition.setMessageRef(messageRef);
-      event.getEventDefinitions().add(eventDefinition);
-    }
+    MessageEventDefinition eventDefinition = new MessageEventDefinition();
+    eventDefinition.setMessageRef(messageRef);
+    event.getEventDefinitions().add(eventDefinition);
   }
   
   protected void convertJsonToErrorDefinition(JsonNode objectNode, Event event) {
     String errorRef = getPropertyValueAsString(PROPERTY_ERRORREF, objectNode);
-    
-    if (StringUtils.isNotEmpty(errorRef)) {
-      ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
-      eventDefinition.setErrorCode(errorRef);
-      event.getEventDefinitions().add(eventDefinition);
-    }
+    ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
+    eventDefinition.setErrorCode(errorRef);
+    event.getEventDefinitions().add(eventDefinition);
   }
   
   protected String getValueAsString(String name, JsonNode objectNode) {

@@ -276,14 +276,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       
       if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerClass, listener.getImplementation());
-        addFieldExtensions(listener.getFieldExtensions(), propertyItemNode, isExecutionListener);
-        
       } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerExpression, listener.getImplementation());
       } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerDelegateExpression, listener.getImplementation());
       }
-      
+      addFieldExtensions(listener.getFieldExtensions(), propertyItemNode, isExecutionListener);
+
       itemsNode.add(propertyItemNode);
     }
     

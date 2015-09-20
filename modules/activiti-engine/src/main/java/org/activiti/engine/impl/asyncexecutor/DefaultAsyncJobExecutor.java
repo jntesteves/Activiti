@@ -55,6 +55,8 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   protected AcquireTimerJobsRunnable timerJobRunnable;
   protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
   
+  protected ExecuteAsyncRunnableFactory executeAsyncRunnableFactory;
+  
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
   
@@ -366,4 +368,21 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   public void setAsyncJobsDueRunnable(AcquireAsyncJobsDueRunnable asyncJobsDueRunnable) {
     this.asyncJobsDueRunnable = asyncJobsDueRunnable;
   }
+
+	public int getRetryWaitTimeInMillis() {
+		return retryWaitTimeInMillis;
+	}
+
+	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
+		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
+	}
+
+	public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
+		return executeAsyncRunnableFactory;
+	}
+
+	public void setExecuteAsyncRunnableFactory(ExecuteAsyncRunnableFactory executeAsyncRunnableFactory) {
+		this.executeAsyncRunnableFactory = executeAsyncRunnableFactory;
+	}
+
 }

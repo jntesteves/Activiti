@@ -13,10 +13,8 @@
 
 package org.activiti.engine.impl.history;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiHistoricEntityEvent;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
@@ -24,24 +22,18 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.AbstractManager;
-import org.activiti.engine.impl.persistence.entity.CommentEntity;
-import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.task.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import static org.activiti.engine.delegate.event.ActivitiEventType.*;
 
 /**
  * Manager class that centralises recording of all history-related operations
@@ -63,7 +55,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryLevelAtLeast(org.activiti.engine.impl.history.HistoryLevel)
  */
   @Override
-public boolean isHistoryLevelAtLeast(HistoryLevel level) {
+  public boolean isHistoryLevelAtLeast(HistoryLevel level) {
     if(log.isDebugEnabled()) {
       log.debug("Current history level: {}, level required: {}", historyLevel, level);
     }
@@ -75,11 +67,18 @@ public boolean isHistoryLevelAtLeast(HistoryLevel level) {
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#isHistoryEnabled()
  */
   @Override
-public boolean isHistoryEnabled() {
+  public boolean isHistoryEnabled() {
     if(log.isDebugEnabled()) {
       log.debug("Current history level: {}", historyLevel);
     }
     return !historyLevel.equals(HistoryLevel.NONE);
+  }
+
+  /*
+   * short method to improve readability
+   */
+  private void fireEvent(ActivitiEvent event) {
+    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(event);
   }
   
   // Process related history
@@ -88,7 +87,7 @@ public boolean isHistoryEnabled() {
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceEnd(java.lang.String, java.lang.String, java.lang.String)
  */
   @Override
-public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
+  public void recordProcessInstanceEnd(String processInstanceId, String deleteReason, String activityId) {
     
     if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager()
@@ -97,6 +96,7 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
       if (historicProcessInstance!=null) {
         historicProcessInstance.markEnded(deleteReason);
         historicProcessInstance.setEndActivityId(activityId);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicProcessInstance));
       }
     }
   }
@@ -109,6 +109,7 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
       
       if (historicProcessInstance!=null) {
         historicProcessInstance.setName(newName);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicProcessInstance));
       }
     }
   }
@@ -148,6 +149,7 @@ public void recordProcessInstanceStart(ExecutionEntity processInstance) {
       }
       
       getDbSqlSession().insert(historicActivityInstance);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicProcessInstance));
     }
   }
   
@@ -167,6 +169,7 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       	initialActivity = subProcessInstance.getProcessDefinition().getInitial();
       }
       getDbSqlSession().insert(historicProcessInstance);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicProcessInstance));
       
       
       HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
@@ -191,6 +194,7 @@ public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, Execu
       
       getDbSqlSession()
         .insert(historicActivityInstance);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicActivityInstance));
     }
   }
   
@@ -225,6 +229,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         }
     		
     		getDbSqlSession().insert(historicActivityInstance);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicActivityInstance));
     	}
     }
   }
@@ -238,6 +243,7 @@ public void recordActivityEnd(ExecutionEntity executionEntity) {
       HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
       if (historicActivityInstance!=null) {
         historicActivityInstance.markEnded(null);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicActivityInstance));
       }
     }
   }
@@ -262,6 +268,7 @@ public void recordStartEventEnded(String executionId, String activityId) {
                 && (cachedHistoricActivityInstance.getEndTime()==null)
                 ) {
           cachedHistoricActivityInstance.markEnded(null);
+          fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, cachedHistoricActivityInstance));
           return;
         }
       }
@@ -342,6 +349,7 @@ public void recordProcessDefinitionChange(String processInstanceId, String proce
       HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
       if(historicProcessInstance != null) {
         historicProcessInstance.setProcessDefinitionId(processDefinitionId);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicProcessInstance));
       }
     }
   }
@@ -357,6 +365,7 @@ public void recordTaskCreated(TaskEntity task, ExecutionEntity execution) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(task, execution);
       getDbSqlSession().insert(historicTaskInstance);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicTaskInstance));
     }
   }
   
@@ -371,6 +380,7 @@ public void recordTaskAssignment(TaskEntity task) {
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
         if(historicActivityInstance != null) {
           historicActivityInstance.setAssignee(task.getAssignee());
+          fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicActivityInstance));
         }
       }
     }
@@ -386,6 +396,7 @@ public void recordTaskClaim(String taskId) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance != null) {
         historicTaskInstance.setClaimTime( Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }    
   }
@@ -402,6 +413,7 @@ public void recordTaskId(TaskEntity task) {
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution);
         if(historicActivityInstance != null) {
           historicActivityInstance.setTaskId(task.getId());
+          fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicActivityInstance));
         }
       }
     }
@@ -416,6 +428,7 @@ public void recordTaskEnd(String taskId, String deleteReason) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.markEnded(deleteReason);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -429,6 +442,7 @@ public void recordTaskAssigneeChange(String taskId, String assignee) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setAssignee(assignee);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -442,6 +456,7 @@ public void recordTaskOwnerChange(String taskId, String owner) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setOwner(owner);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -455,6 +470,7 @@ public void recordTaskNameChange(String taskId, String taskName) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setName(taskName);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -468,6 +484,7 @@ public void recordTaskDescriptionChange(String taskId, String description) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setDescription(description);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -481,6 +498,7 @@ public void recordTaskDueDateChange(String taskId, Date dueDate) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setDueDate(dueDate);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -494,6 +512,7 @@ public void recordTaskPriorityChange(String taskId, int priority) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setPriority(priority);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -507,6 +526,7 @@ public void recordTaskPriorityChange(String taskId, int priority) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setCategory(category);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -517,6 +537,7 @@ public void recordTaskPriorityChange(String taskId, int priority) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setFormKey(formKey);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }	
   }
@@ -531,6 +552,7 @@ public void recordTaskParentTaskIdChange(String taskId, String parentTaskId) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setParentTaskId(parentTaskId);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -544,6 +566,7 @@ public void recordTaskExecutionIdChange(String taskId, String executionId) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setExecutionId(executionId);
+        fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -565,6 +588,7 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
               Object formValue = taskFormHandler.getFormKey().getValue(task.getExecution());
               if (formValue != null) {
                 historicTaskInstance.setFormKey(formValue.toString());
+                fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicTaskInstance));
               }
             }
           }
@@ -583,7 +607,8 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
 public void recordVariableCreate(VariableInstanceEntity variable) {
     // Historic variables
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity.copyAndInsert(variable);
+      HistoricVariableInstanceEntity variableInstanceEntity = HistoricVariableInstanceEntity.copyAndInsert(variable);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, variableInstanceEntity));
     }
   }
   
@@ -601,6 +626,7 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution); 
         if (historicActivityInstance!=null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
+          fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicVariableUpdate));
         }
       }
     }
@@ -612,7 +638,7 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
   @Override
 public void recordVariableUpdate(VariableInstanceEntity variable) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricVariableInstanceEntity historicProcessVariable = 
+      HistoricVariableInstanceEntity historicProcessVariable =
           getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
       if (historicProcessVariable==null) {
         historicProcessVariable = Context.getCommandContext()
@@ -623,8 +649,9 @@ public void recordVariableUpdate(VariableInstanceEntity variable) {
       if (historicProcessVariable!=null) {
         historicProcessVariable.copyValue(variable);
       } else {
-        HistoricVariableInstanceEntity.copyAndInsert(variable);
+        historicProcessVariable = HistoricVariableInstanceEntity.copyAndInsert(variable);
       }
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicProcessVariable));
     }
   }
   
@@ -750,6 +777,7 @@ public void recordIdentityLinkCreated(IdentityLinkEntity identityLink) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT) && (identityLink.getProcessInstanceId() != null || identityLink.getTaskId() != null)) {
       HistoricIdentityLinkEntity historicIdentityLinkEntity = new HistoricIdentityLinkEntity(identityLink);
       getDbSqlSession().insert(historicIdentityLinkEntity);
+      fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_CREATED, historicIdentityLinkEntity));
     }
   }
 
@@ -777,6 +805,7 @@ public void updateProcessBusinessKeyInHistory(ExecutionEntity processInstance) {
         if (historicProcessInstance != null) {
           historicProcessInstance.setBusinessKey(processInstance.getProcessBusinessKey());
           getDbSqlSession().update(historicProcessInstance);
+          fireEvent(new ActivitiHistoricEntityEvent(HISTORIC_UPDATED, historicProcessInstance));
         }
       }
     }

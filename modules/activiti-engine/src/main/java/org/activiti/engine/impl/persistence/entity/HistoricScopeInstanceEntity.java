@@ -30,6 +30,8 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject, S
   protected String id;
   protected String processInstanceId;
   protected String processDefinitionId;
+  protected String processDefinitionKey;
+  protected String processDefinitionName;
   protected Date startTime;
   protected Date endTime;
   protected Long durationInMillis;
@@ -48,6 +50,12 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject, S
   }
   public String getProcessDefinitionId() {
     return processDefinitionId;
+  }
+  public String getProcessDefinitionKey() {
+    return processDefinitionKey;
+  }
+  public String getProcessDefinitionName() {
+    return processDefinitionName;
   }
   public Date getStartTime() {
     return startTime;
@@ -69,6 +77,12 @@ public abstract class HistoricScopeInstanceEntity implements PersistentObject, S
   }
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
+  }
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+  }
+  public void setProcessDefinitionName(String processDefinitionName) {
+    this.processDefinitionName = processDefinitionName;
   }
   public void setStartTime(Date startTime) {
     this.startTime = startTime;

@@ -13,16 +13,16 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.PersistentObject;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -55,6 +55,8 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     this.id = task.getId();
     if (execution != null) {
       this.processDefinitionId = execution.getProcessDefinitionId();
+      this.processDefinitionKey = execution.getProcessDefinitionKey();
+      this.processDefinitionName = execution.getProcessDefinitionName();
       this.processInstanceId = execution.getProcessInstanceId();
       this.executionId = execution.getId();
     }

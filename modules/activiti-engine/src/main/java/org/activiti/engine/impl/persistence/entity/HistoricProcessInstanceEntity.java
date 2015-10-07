@@ -14,15 +14,15 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.identity.Authentication;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tom Baeyens
@@ -50,6 +50,8 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     processInstanceId = processInstance.getId();
     businessKey = processInstance.getBusinessKey();
     processDefinitionId = processInstance.getProcessDefinitionId();
+    processDefinitionKey = processInstance.getProcessDefinitionKey();
+    processDefinitionName = processInstance.getProcessDefinitionName();
     startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
@@ -88,6 +90,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public String getBusinessKey() {
     return businessKey;
   }
+
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }

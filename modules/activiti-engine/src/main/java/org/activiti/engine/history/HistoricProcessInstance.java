@@ -14,11 +14,11 @@
 
 package org.activiti.engine.history;
 
-import java.util.Date;
-import java.util.Map;
-
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.Date;
+import java.util.Map;
 
 /** A single execution of a whole process definition that is stored permanently.
  * 
@@ -32,8 +32,14 @@ public interface HistoricProcessInstance {
   /** The user provided unique reference to this process instance. */
   String getBusinessKey();
 
-  /** The process definition reference. */
+  /** The process definition id. */
   String getProcessDefinitionId();
+
+  /** The process definition key. */
+  String getProcessDefinitionKey();
+
+  /** The process definition name. */
+  String getProcessDefinitionName();
 
   /** The time the process was started. */
   Date getStartTime();

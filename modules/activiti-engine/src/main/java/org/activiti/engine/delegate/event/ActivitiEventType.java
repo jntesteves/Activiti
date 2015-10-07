@@ -209,12 +209,7 @@ public enum ActivitiEventType {
    * be dispatched due to possible performance reasons. The event is dispatched before the memberships are deleted,
    * so they can still be accessed in the dispatch method of the listener.
    */
-  MEMBERSHIPS_DELETED,
-
-  HISTORIC_CREATED,
-  HISTORIC_UPDATED,
-  HISTORIC_DELETED
-  ;
+  MEMBERSHIPS_DELETED;
 
   public static final ActivitiEventType[] EMPTY_ARRAY =  new ActivitiEventType[] {};
   

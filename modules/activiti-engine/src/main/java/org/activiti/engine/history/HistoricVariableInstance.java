@@ -13,9 +13,9 @@
 
 package org.activiti.engine.history;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.history.HistoryLevel;
+
+import java.util.Date;
 
 
 /**
@@ -33,16 +33,24 @@ public interface HistoricVariableInstance extends HistoricData {
   String getVariableName();
   String getVariableTypeName();
   Object getValue();
+
+  /**
+   * Used to clear the variable cache
+   */
+  void invalidateCache();
     
   /** The process instance reference. */
   String getProcessInstanceId();
-  
+
+  /** The execution reference. */
+  String getExecutionId();
+
   /**
    * @return the task id of the task, in case this variable instance has been set locally
    * on a task. Returns null, if this variable is not related to a task.
    */
   String getTaskId();
-  
+
   /**
    * Returns the time when the variable was created. 
    */

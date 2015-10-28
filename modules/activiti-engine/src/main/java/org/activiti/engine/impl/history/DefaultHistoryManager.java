@@ -589,11 +589,11 @@ public void recordTaskDefinitionKeyChange(TaskEntity task, String taskDefinition
               Object formValue = taskFormHandler.getFormKey().getValue(task.getExecution());
               if (formValue != null) {
                 historicTaskInstance.setFormKey(formValue.toString());
-                fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, historicTaskInstance));
               }
             }
           }
         }
+        fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, historicTaskInstance));
       }
     }
   }
@@ -627,9 +627,9 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
         HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution); 
         if (historicActivityInstance!=null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
-          fireEvent(new ActivitiHistoricEntityEvent(ENTITY_CREATED, historicVariableUpdate));
         }
       }
+      fireEvent(new ActivitiHistoricEntityEvent(ENTITY_CREATED, historicVariableUpdate));
     }
   }
   

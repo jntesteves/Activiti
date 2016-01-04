@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Map;
-
-import javax.naming.NamingException;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.cfg.MailServerInfo;
@@ -31,6 +27,11 @@ import org.apache.commons.mail.HtmlEmail;
 import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.mail.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.Map;
 
 /**
  * @author Joram Barrez
@@ -259,7 +260,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
     
   protected void setEmailSession(Email email, String mailSessionJndi) {
     try {
-      email.setMailSessionFromJNDI(mailSessionJndi);
+      Session session = InitialContext.doLookup(mailSessionJndi);
+      email.setMailSession(session);
     } catch (NamingException e) {
       throw new ActivitiException("Could not send email: Incorrect JNDI configuration", e);
     }

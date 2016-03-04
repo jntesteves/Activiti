@@ -655,6 +655,17 @@ public void recordVariableUpdate(VariableInstanceEntity variable) {
       fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, historicProcessVariable));
     }
   }
+
+  /* (non-Javadoc)
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableUpdate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+   */
+  @Override
+  public void recordHistoricVariableUpdate(HistoricVariableInstanceEntity variable) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      variable.setLastUpdatedTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, variable));
+    }
+  }
   
   // Comment related history
   

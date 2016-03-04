@@ -14,25 +14,15 @@
 
 package org.activiti.engine.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.history.HistoricActivityInstanceQuery;
-import org.activiti.engine.history.HistoricDetailQuery;
-import org.activiti.engine.history.HistoricIdentityLink;
-import org.activiti.engine.history.HistoricProcessInstanceQuery;
-import org.activiti.engine.history.HistoricTaskInstanceQuery;
-import org.activiti.engine.history.HistoricVariableInstanceQuery;
-import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
-import org.activiti.engine.history.NativeHistoricDetailQuery;
-import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
-import org.activiti.engine.history.NativeHistoricTaskInstanceQuery;
-import org.activiti.engine.history.NativeHistoricVariableInstanceQuery;
-import org.activiti.engine.history.ProcessInstanceHistoryLogQuery;
+import org.activiti.engine.history.*;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
-import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
-import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
+import org.activiti.engine.impl.cmd.*;
 
 /**
  * @author Tom Baeyens
@@ -68,6 +58,11 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   @Override
   public NativeHistoricDetailQuery createNativeHistoricDetailQuery() {
     return new NativeHistoricDetailQueryImpl(commandExecutor);
+  }
+
+  @Override
+  public void setHistoricVariable(String processInstanceId, String variableName, Object variableValue) {
+    commandExecutor.execute(new SetHistoricVariableCmd(processInstanceId, variableName, variableValue));
   }
 
   public HistoricVariableInstanceQuery createHistoricVariableInstanceQuery() {

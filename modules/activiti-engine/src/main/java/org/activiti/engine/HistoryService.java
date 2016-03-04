@@ -65,6 +65,9 @@ public interface HistoryService {
    * Returns a new {@link org.activiti.engine.query.NativeQuery} for process definitions.
    */
   NativeHistoricDetailQuery createNativeHistoricDetailQuery();
+
+  /** Update a historic variable instance */
+  void setHistoricVariable(String processInstanceId, String variableName, Object variableValue);
   
   /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
   HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();

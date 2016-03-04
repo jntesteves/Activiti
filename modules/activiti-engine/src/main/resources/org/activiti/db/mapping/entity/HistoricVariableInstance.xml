@@ -89,6 +89,11 @@
   
   <!-- HISTORIC VARIABLE SELECT -->
 
+  <select id="selectHistoricVariableInstanceByProcessInstanceAndName" parameterType="java.util.Map" resultMap="historicProcessVariableResultMap">
+    select * from ${prefix}ACT_HI_VARINST
+    where PROC_INST_ID_ = #{processInstanceId, jdbcType=VARCHAR} and NAME_ = #{name, jdbcType=VARCHAR}
+  </select>
+
   <select id="selectHistoricVariableInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultMap="historicProcessVariableResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,6 +52,13 @@ public class HistoricVariableInstanceEntityManager extends AbstractManager {
         }
       }
     }
+  }
+
+  public HistoricVariableInstanceEntity findHistoricVariableInstanceByProcessInstanceAndName(String processInstanceId, String variableName) {
+    Map<String, String> params = new HashMap<String, String>(2);
+    params.put("processInstanceId", processInstanceId);
+    params.put("name", variableName);
+    return (HistoricVariableInstanceEntity) getDbSqlSession().selectOne("selectHistoricVariableInstanceByProcessInstanceAndName", params);
   }
   
   public long findHistoricVariableInstanceCountByQueryCriteria(HistoricVariableInstanceQueryImpl historicProcessVariableQuery) {

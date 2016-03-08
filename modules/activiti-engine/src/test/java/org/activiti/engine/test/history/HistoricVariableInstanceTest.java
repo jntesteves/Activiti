@@ -21,11 +21,8 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -436,20 +433,38 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources={
     "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
   })
-  public void testChangeProcessClosed() {
+  public void testSetHistoricVariableProcessOpened() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       TaskQuery taskQuery = taskService.createTaskQuery();
       Task task = taskQuery.singleResult();
       assertEquals("my task", task.getName());
 
-      runtimeService.setVariable(processInstance.getId(), "firstVar", "123");
+      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "123");
+      assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
       assertEquals("123", getHistoricVariable("firstVar").getValue());
 
       taskService.complete(task.getId());
       assertProcessEnded(processInstance.getId());
 
+    }
+  }
+
+  @Deployment(resources={
+  "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
+  })
+  public void testSetHistoricVariableProcessClosed() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      TaskQuery taskQuery = taskService.createTaskQuery();
+      Task task = taskQuery.singleResult();
+      assertEquals("my task", task.getName());
+
+      taskService.complete(task.getId());
+      assertProcessEnded(processInstance.getId());
+
       historyService.setHistoricVariable(processInstance.getId(), "firstVar", "456");
+      assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
       assertEquals("456", getHistoricVariable("firstVar").getValue());
 
     }

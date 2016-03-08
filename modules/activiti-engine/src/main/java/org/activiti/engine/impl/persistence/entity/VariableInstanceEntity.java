@@ -53,7 +53,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected boolean deleted = false;
   
   // Default constructor for SQL mapping
-  protected VariableInstanceEntity() {
+  public VariableInstanceEntity() {
   }
   
   public static void touch(VariableInstanceEntity variableInstance) {

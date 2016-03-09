@@ -618,7 +618,7 @@ public void recordVariableCreate(VariableInstanceEntity variable) {
  */
   @Override
 public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
-    if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 
           HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);

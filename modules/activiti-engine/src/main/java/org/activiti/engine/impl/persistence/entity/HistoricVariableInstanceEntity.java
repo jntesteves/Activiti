@@ -131,6 +131,11 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
     return cachedValue;
   }
 
+  public void setValue(Object value) {
+    variableType.setValue(value, this);
+    cachedValue = value;
+  }
+
   public void invalidateCache() {
     setCachedValue(null);
   }

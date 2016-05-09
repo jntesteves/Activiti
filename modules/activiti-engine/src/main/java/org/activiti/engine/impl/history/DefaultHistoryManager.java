@@ -618,7 +618,7 @@ public void recordVariableCreate(VariableInstanceEntity variable) {
  */
   @Override
 public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, ExecutionEntity sourceActivityExecution, boolean useActivityId) {
-    if (isHistoryLevelAtLeast(HistoryLevel.FULL)) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = 
           HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
@@ -653,6 +653,17 @@ public void recordVariableUpdate(VariableInstanceEntity variable) {
         historicProcessVariable = HistoricVariableInstanceEntity.copyAndInsert(variable);
       }
       fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, historicProcessVariable));
+    }
+  }
+
+  /* (non-Javadoc)
+   * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableUpdate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+   */
+  @Override
+  public void recordHistoricVariableUpdate(HistoricVariableInstanceEntity variable) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      variable.setLastUpdatedTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      fireEvent(new ActivitiHistoricEntityEvent(ENTITY_UPDATED, variable));
     }
   }
   

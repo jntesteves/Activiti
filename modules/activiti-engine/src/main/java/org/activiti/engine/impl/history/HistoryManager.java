@@ -5,11 +5,7 @@ import java.util.Map;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Session;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.task.IdentityLink;
 
@@ -191,6 +187,11 @@ public interface HistoryManager extends Session {
 	 * Record a variable has been updated, if audit history is enabled.
 	 */
 	public abstract void recordVariableUpdate(VariableInstanceEntity variable);
+
+  /**
+   * Record a variable has been updated, if audit history is enabled.
+   */
+  public abstract void recordHistoricVariableUpdate(HistoricVariableInstanceEntity variable);
 
 	/**
 	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 

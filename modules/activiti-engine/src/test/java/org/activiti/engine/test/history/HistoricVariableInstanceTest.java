@@ -429,6 +429,46 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 	     assertProcessEnded(processInstance.getId());
   	 }
    }
+
+  @Deployment(resources={
+    "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
+  })
+  public void testSetHistoricVariableProcessOpened() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      TaskQuery taskQuery = taskService.createTaskQuery();
+      Task task = taskQuery.singleResult();
+      assertEquals("my task", task.getName());
+
+      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "123");
+      assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
+      assertEquals("123", getHistoricVariable("firstVar").getValue());
+
+      taskService.complete(task.getId());
+      assertProcessEnded(processInstance.getId());
+
+    }
+  }
+
+  @Deployment(resources={
+  "org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"
+  })
+  public void testSetHistoricVariableProcessClosed() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+      TaskQuery taskQuery = taskService.createTaskQuery();
+      Task task = taskQuery.singleResult();
+      assertEquals("my task", task.getName());
+
+      taskService.complete(task.getId());
+      assertProcessEnded(processInstance.getId());
+
+      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "456");
+      assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
+      assertEquals("456", getHistoricVariable("firstVar").getValue());
+
+    }
+  }
  
    private HistoricVariableInstance getHistoricVariable(String variableName) {
      return historyService.createHistoricVariableInstanceQuery().variableName(variableName).singleResult();

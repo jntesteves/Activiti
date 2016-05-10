@@ -239,6 +239,9 @@ import org.slf4j.LoggerFactory;
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {  
 
   private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
+
+  public static final int DEFAULT_GENERIC_MAX_LENGTH_STRING = 4000;
+  public static final int DEFAULT_ORACLE_MAX_LENGTH_STRING = 2000;
   
   public static final String DB_SCHEMA_UPDATE_CREATE = "create";
   public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
@@ -421,6 +424,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initProcessDiagramGenerator();
     initHistoryLevel();
     initExpressionManager();
+    initDataSource();
     initVariableTypes();
     initBeans();
     initFormEngines();
@@ -437,7 +441,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
-    initDataSource();
     initTransactionFactory();
     initSqlSessionFactory();
     initSessionFactories();
@@ -1236,8 +1239,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
       }
       variableTypes.addType(new NullType());
-      variableTypes.addType(new StringType(4000));
-      variableTypes.addType(new LongStringType(4001));
+      variableTypes.addType(new StringType(getMaxLengthString()));
+      variableTypes.addType(new LongStringType(getMaxLengthString() + 1));
       variableTypes.addType(new BooleanType());
       variableTypes.addType(new ShortType());
       variableTypes.addType(new IntegerType());
@@ -1254,6 +1257,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
           variableTypes.addType(customVariableType);
         }
       }
+    }
+  }
+
+  protected int getMaxLengthString() {
+    if ("oracle".equalsIgnoreCase(databaseType) == true) {
+      return DEFAULT_ORACLE_MAX_LENGTH_STRING;
+    } else {
+      return DEFAULT_GENERIC_MAX_LENGTH_STRING;
     }
   }
 

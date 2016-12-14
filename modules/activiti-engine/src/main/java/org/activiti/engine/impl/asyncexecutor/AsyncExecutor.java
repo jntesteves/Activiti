@@ -46,4 +46,13 @@ public interface AsyncExecutor {
   public int getMaxTimerJobsPerAcquisition();
   
   public void setMaxTimerJobsPerAcquisition(int maxJobs);
+
+  public int getQueueSize();
+
+  public void setQueueSize(int queueSize);
+
+  public int getMaxPoolSize();
+
+  public void setMaxPoolSize(int maxPoolSize);
+
 }

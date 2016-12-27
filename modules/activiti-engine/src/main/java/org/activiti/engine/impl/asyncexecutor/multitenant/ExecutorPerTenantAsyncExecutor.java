@@ -188,13 +188,27 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
     }
   }
 
-  public int getRetryWaitTimeInMillis() {
-    return determineAsyncExecutor().getRetryWaitTimeInMillis();
+  @Override
+  public int getQueueSize() {
+    return determineAsyncExecutor().getQueueSize();
   }
 
-  public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
+  @Override
+  public void setQueueSize(int queueSize) {
     for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
-      asyncExecutor.setRetryWaitTimeInMillis(retryWaitTimeInMillis);
+      asyncExecutor.setQueueSize(queueSize);
+    }
+  }
+
+  @Override
+  public int getMaxPoolSize() {
+    return determineAsyncExecutor().getMaxPoolSize();
+  }
+
+  @Override
+  public void setMaxPoolSize(int maxPoolSize) {
+    for (AsyncExecutor asyncExecutor : tenantExecutors.values()) {
+      asyncExecutor.setMaxPoolSize(maxPoolSize);
     }
   }
 

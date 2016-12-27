@@ -76,4 +76,23 @@ public class SpringJobExecutor extends JobExecutor {
   protected void stopExecutingJobs() {
     stopJobAcquisitionThread();
   }
+
+	public int getQueueSize() {
+		return 0;
+	}
+
+	public void setQueueSize(int queueSize){}
+
+	public int getCorePoolSize() {
+		return 0;
+	}
+
+	public void setCorePoolSize(int corePoolSize) {}
+
+	public int getMaxPoolSize() {
+		return 0;
+	}
+
+	public void setMaxPoolSize(int maxPoolSize){}
+
 }

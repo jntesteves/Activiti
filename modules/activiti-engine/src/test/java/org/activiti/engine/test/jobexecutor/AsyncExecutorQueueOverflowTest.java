@@ -90,8 +90,8 @@ protected static DataSource dataSource;
     config.setJdbcUrl("jdbc:h2:mem:activiti-AsyncExecutorQueueOverflowTest;DB_CLOSE_DELAY=1000");
     config.setAsyncExecutorEnabled(true);
     config.setAsyncExecutorActivate(true);
-    config.setAsyncExecutorThreadPoolQueueSize(queueSize);
-    config.setAsyncExecutorDefaultAsyncJobAcquireWaitTime(500);
+//    config.setAsyncExecutorThreadPoolQueueSize(queueSize);
+//    config.setAsyncExecutorDefaultAsyncJobAcquireWaitTime(500);
     
     config.setDatabaseSchemaUpdate("drop-create");
     config.setDataSource(dataSource);

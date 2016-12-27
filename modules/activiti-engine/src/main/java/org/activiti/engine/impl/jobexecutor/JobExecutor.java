@@ -157,6 +157,18 @@ public abstract class JobExecutor {
   
   // getters and setters //////////////////////////////////////////////////////
 
+  public abstract int getQueueSize();
+
+  public abstract void setQueueSize(int queueSize);
+
+  public abstract int getCorePoolSize();
+
+  public abstract void setCorePoolSize(int corePoolSize);
+
+  public abstract int getMaxPoolSize();
+
+  public abstract void setMaxPoolSize(int maxPoolSize);
+
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }

@@ -369,14 +369,6 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     this.asyncJobsDueRunnable = asyncJobsDueRunnable;
   }
 
-	public int getRetryWaitTimeInMillis() {
-		return retryWaitTimeInMillis;
-	}
-
-	public void setRetryWaitTimeInMillis(int retryWaitTimeInMillis) {
-		this.retryWaitTimeInMillis = retryWaitTimeInMillis;
-	}
-
 	public ExecuteAsyncRunnableFactory getExecuteAsyncRunnableFactory() {
 		return executeAsyncRunnableFactory;
 	}

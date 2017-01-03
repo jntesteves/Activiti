@@ -201,6 +201,16 @@ public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor 
   }
 
   @Override
+  public int getCorePoolSize() {
+    return 0;
+  }
+
+  @Override
+  public void setCorePoolSize(int corePoolSize) {
+
+  }
+
+  @Override
   public int getMaxPoolSize() {
     return determineAsyncExecutor().getMaxPoolSize();
   }

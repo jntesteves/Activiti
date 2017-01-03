@@ -51,6 +51,10 @@ public interface AsyncExecutor {
 
   public void setQueueSize(int queueSize);
 
+  public int getCorePoolSize();
+
+  public void setCorePoolSize(int corePoolSize);
+
   public int getMaxPoolSize();
 
   public void setMaxPoolSize(int maxPoolSize);

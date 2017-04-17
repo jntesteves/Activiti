@@ -48,7 +48,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   private static final long serialVersionUID = 1L;
 
-  protected String key;
   protected int revision = 1;
   protected int version;
   protected String category;

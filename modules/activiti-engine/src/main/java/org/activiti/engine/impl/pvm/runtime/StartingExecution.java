@@ -15,11 +15,12 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
+import java.io.Serializable;
 
 /**
  * @author Daniel Meyer
  */
-public class StartingExecution {
+public class StartingExecution implements Serializable {
   
   protected final ActivityImpl selectedInitial;
 

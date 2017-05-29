@@ -15,6 +15,7 @@
  */
 package org.activiti.engine.impl.javax.el;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -41,7 +42,7 @@ import java.util.Map;
  * evaluation, an ELContext object is not thread-safe. Care should be taken to never share an
  * ELContext instance between two or more threads.
  */
-public abstract class ELContext {
+public abstract class ELContext implements Serializable {
 	private final Map<Class<?>, Object> context = new HashMap<Class<?>, Object>();
 
 	private Locale locale;

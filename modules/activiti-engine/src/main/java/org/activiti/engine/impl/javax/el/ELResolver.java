@@ -16,6 +16,7 @@
 package org.activiti.engine.impl.javax.el;
 
 import java.beans.FeatureDescriptor;
+import java.io.Serializable;
 import java.util.Iterator;
 
 /**
@@ -57,7 +58,7 @@ import java.util.Iterator;
  * tool support, but must handle invocation at runtime as well. The java.beans.Beans.isDesignTime()
  * method can be used to determine if the resolver is being consulted at design-time or runtime.
  */
-public abstract class ELResolver {
+public abstract class ELResolver implements Serializable {
 	/**
 	 * The attribute name of the named attribute in the FeatureDescriptor that specifies whether the
 	 * variable or property can be resolved at runtime.

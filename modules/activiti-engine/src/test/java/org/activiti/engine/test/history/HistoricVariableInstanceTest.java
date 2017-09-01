@@ -34,6 +34,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
+ * @author Thiago Alves (iColabora)
  */
 public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 
@@ -440,7 +441,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       Task task = taskQuery.singleResult();
       assertEquals("my task", task.getName());
 
-      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "123");
+      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "123", processInstance.getProcessDefinitionId());
       assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
       assertEquals("123", getHistoricVariable("firstVar").getValue());
 
@@ -463,7 +464,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       taskService.complete(task.getId());
       assertProcessEnded(processInstance.getId());
 
-      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "456");
+      historyService.setHistoricVariable(processInstance.getId(), "firstVar", "456", processInstance.getProcessDefinitionId());
       assertEquals(processInstance.getId(), getHistoricVariable("firstVar").getProcessInstanceId());
       assertEquals("456", getHistoricVariable("firstVar").getValue());
 

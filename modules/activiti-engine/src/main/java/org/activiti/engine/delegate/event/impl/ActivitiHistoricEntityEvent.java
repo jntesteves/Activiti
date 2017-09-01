@@ -6,7 +6,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.history.*;
 
 /**
- * @author Mike Dias
+ * @author Mike Dias (iColabora)
+ * @author Thiago Alves (iColabora)
  */
 public class ActivitiHistoricEntityEvent implements ActivitiEntityEvent {
 
@@ -45,6 +46,7 @@ public class ActivitiHistoricEntityEvent implements ActivitiEntityEvent {
   public ActivitiHistoricEntityEvent(ActivitiEventType eventType, HistoricVariableInstance historicVar) {
     this(eventType, (Object) historicVar);
     this.processInstanceId = historicVar.getProcessInstanceId();
+    this.processDefinitionId = historicVar.getProcessDefinitionId();
   }
 
   public ActivitiHistoricEntityEvent(ActivitiEventType eventType, HistoricIdentityLink historicIdentityLink) {

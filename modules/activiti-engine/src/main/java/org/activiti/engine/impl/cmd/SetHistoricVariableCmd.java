@@ -14,7 +14,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import java.io.Serializable;
 
 /**
- * @author Thiago Alves
+ * @author Thiago Alves (iColabora)
  */
 public class SetHistoricVariableCmd implements Command<Object>, Serializable {
 
@@ -22,11 +22,13 @@ public class SetHistoricVariableCmd implements Command<Object>, Serializable {
   protected String procInstId;
   protected String variableName;
   protected Object variableValue;
+  protected String procDefId;
 
-  public SetHistoricVariableCmd(String procInstId, String variableName, Object variableValue) {
+  public SetHistoricVariableCmd(String procInstId, String variableName, Object variableValue, String procDefId) {
     this.procInstId = procInstId;
     this.variableName = variableName;
     this.variableValue = variableValue;
+    this.procDefId = procDefId;
   }
 
   @Override
@@ -43,6 +45,7 @@ public class SetHistoricVariableCmd implements Command<Object>, Serializable {
     VariableType type = variableTypes.findVariableType(variableValue);
     VariableInstanceEntity variableInstanceEntity = new VariableInstanceEntity().create(variableName,type,variableValue);
     variableInstanceEntity.setProcessInstanceId(procInstId);
+    variableInstanceEntity.setProcessDefinitionId(procDefId);
 
     if (historicVariableInstance == null) {
       historicVariableInstance = HistoricVariableInstanceEntity.copyAndInsert(variableInstanceEntity);
@@ -55,4 +58,5 @@ public class SetHistoricVariableCmd implements Command<Object>, Serializable {
 
     return null;
   }
+
 }

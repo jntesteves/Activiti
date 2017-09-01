@@ -46,6 +46,7 @@ import org.activiti.engine.task.IdentityLink;
  * @author Christian Stettler
  * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Thiago Alves (iColabora)
  */
 public interface HistoryService {
 
@@ -67,7 +68,7 @@ public interface HistoryService {
   NativeHistoricDetailQuery createNativeHistoricDetailQuery();
 
   /** Update a historic variable instance */
-  void setHistoricVariable(String processInstanceId, String variableName, Object variableValue);
+  void setHistoricVariable(String processInstanceId, String variableName, Object variableValue, String processDefinitionId);
   
   /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
   HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();

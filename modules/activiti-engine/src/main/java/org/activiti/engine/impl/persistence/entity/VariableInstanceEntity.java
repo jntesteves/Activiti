@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * @author Tom Baeyens
  * @author Marcus Klimstra (CGI)
+ * @author Thiago Alves (iColabora)
  */
 public class VariableInstanceEntity implements ValueFields, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
@@ -38,6 +39,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected String name;
   protected VariableType type;
 
+  protected String processDefinitionId;
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
@@ -136,6 +138,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   // lazy initialized relations ///////////////////////////////////////////////
 
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
@@ -212,6 +218,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     this.type = type;
   }
 
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
   public String getProcessInstanceId() {
     return processInstanceId;
   }

@@ -24,6 +24,7 @@ import java.util.Date;
  * 
  * @author Christian Lipphardt (camunda)
  * @author ruecker
+ * @author Thiago Alves (iColabora)
  */
 public interface HistoricVariableInstance extends HistoricData {
   
@@ -38,6 +39,9 @@ public interface HistoricVariableInstance extends HistoricData {
    * Used to clear the variable cache
    */
   void invalidateCache();
+
+  /** The process definition reference. */
+  String getProcessDefinitionId();
     
   /** The process instance reference. */
   String getProcessInstanceId();

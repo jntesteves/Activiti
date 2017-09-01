@@ -29,6 +29,7 @@ import java.util.HashMap;
 /**
  * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
+ * @author Thiago Alves (iColabora)
  */
 public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
@@ -40,6 +41,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   protected String name;
   protected VariableType variableType;
 
+  protected String processDefinitionId;
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
@@ -62,6 +64,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   public static HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
     HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
     historicVariableInstance.id = variableInstance.getId();
+    historicVariableInstance.processDefinitionId = variableInstance.getProcessDefinitionId();
     historicVariableInstance.processInstanceId = variableInstance.getProcessInstanceId();
     historicVariableInstance.executionId = variableInstance.getExecutionId();
     historicVariableInstance.taskId = variableInstance.getTaskId();
@@ -243,6 +246,14 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
 
   public void setVariableType(VariableType variableType) {
     this.variableType = variableType;
+  }
+
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
   }
 
   public void setProcessInstanceId(String processInstanceId) {

@@ -14,20 +14,21 @@
 
 package org.activiti.engine.impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.*;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cmd.*;
+import org.activiti.engine.impl.cmd.DeleteHistoricProcessInstanceCmd;
+import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
+import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
+import org.activiti.engine.impl.cmd.SetHistoricVariableCmd;
+
+import java.util.List;
 
 /**
  * @author Tom Baeyens
  * @author Bernd Ruecker (camunda)
  * @author Christian Stettler
+ * @author Thiago Alves (iColabora)
  */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
 	
@@ -61,8 +62,8 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   }
 
   @Override
-  public void setHistoricVariable(String processInstanceId, String variableName, Object variableValue) {
-    commandExecutor.execute(new SetHistoricVariableCmd(processInstanceId, variableName, variableValue));
+  public void setHistoricVariable(String processInstanceId, String variableName, Object variableValue, String processDefinitionId) {
+    commandExecutor.execute(new SetHistoricVariableCmd(processInstanceId, variableName, variableValue, processDefinitionId));
   }
 
   public HistoricVariableInstanceQuery createHistoricVariableInstanceQuery() {

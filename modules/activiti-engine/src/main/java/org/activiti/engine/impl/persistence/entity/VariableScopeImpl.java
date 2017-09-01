@@ -37,6 +37,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
  * @author Joram Barrez
  * @author Tijs Rademakers
  * @author Saeid Mirzaei
+ * @author Thiago Alves (iColabora)
  */
 public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
@@ -675,6 +676,10 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       variableInstance.setValue(value);
     }
 
+    if (sourceActivityExecution != null) {
+		variableInstance.setProcessDefinitionId(sourceActivityExecution.getProcessDefinitionId());
+	}
+
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
     
@@ -690,6 +695,9 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     VariableType type = variableTypes.findVariableType(value);
  
     VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
+    if (sourceActivityExecution != null) {
+      variableInstance.setProcessDefinitionId(sourceActivityExecution.getProcessDefinitionId());
+    }
     initializeVariableInstanceBackPointer(variableInstance);
     
     if (variableInstances != null) {

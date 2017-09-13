@@ -25,6 +25,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
@@ -361,10 +362,22 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if(eventSubscriptionDeclarations != null) {
       for (EventSubscriptionDeclaration eventSubscriptionDeclaration : eventSubscriptionDeclarations) {        
         if(!eventSubscriptionDeclaration.isStartEvent()) {
-          EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionDeclaration.prepareEventSubscriptionEntity(this); 
+
+          // Resolve expression before inserting - TURB-2283
+          Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(eventSubscriptionDeclaration.getEventName());
+          String resolvedExpression = expression.getValue(this).toString();
+
+          EventSubscriptionDeclaration esd = new EventSubscriptionDeclaration(resolvedExpression, eventSubscriptionDeclaration.getEventType());
+          esd.setActivityId(eventSubscriptionDeclaration.getActivityId());
+          esd.setAsync(eventSubscriptionDeclaration.isAsync());
+          esd.setConfiguration(eventSubscriptionDeclaration.getConfiguration());
+          esd.setStartEvent(eventSubscriptionDeclaration.isStartEvent());
+
+          EventSubscriptionEntity eventSubscriptionEntity = esd.prepareEventSubscriptionEntity(this);
           if (getTenantId() != null) {
           	eventSubscriptionEntity.setTenantId(getTenantId());
           }
+
           eventSubscriptionEntity.insert();
         }        
       }

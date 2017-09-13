@@ -19,6 +19,7 @@ package org.activiti.bpmn.model;
 public class MessageEventDefinition extends EventDefinition {
 
   protected String messageRef;
+  protected String messageRefExpression;
 
   public String getMessageRef() {
     return messageRef;
@@ -26,6 +27,14 @@ public class MessageEventDefinition extends EventDefinition {
 
   public void setMessageRef(String messageRef) {
     this.messageRef = messageRef;
+  }
+
+  public String getMessageRefExpression() {
+    return messageRefExpression;
+  }
+
+  public void setMessageRefExpression(String messageRefExpression) {
+    this.messageRefExpression = messageRefExpression;
   }
   
   public MessageEventDefinition clone() {
@@ -37,5 +46,6 @@ public class MessageEventDefinition extends EventDefinition {
   public void setValues(MessageEventDefinition otherDefinition) {
     super.setValues(otherDefinition);
     setMessageRef(otherDefinition.getMessageRef());
+    setMessageRefExpression(otherDefinition.getMessageRefExpression());
   }
 }

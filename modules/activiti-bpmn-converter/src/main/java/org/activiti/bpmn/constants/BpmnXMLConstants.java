@@ -226,6 +226,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_ERROR_CODE = "errorCode";
   public static final String ELEMENT_EVENT_MESSAGEDEFINITION = "messageEventDefinition";
   public static final String ATTRIBUTE_MESSAGE_REF = "messageRef";
+  public static final String ATTRIBUTE_MESSAGE_REF_EXPRESSION = "messageRefExpression";
   public static final String ELEMENT_EVENT_SIGNALDEFINITION = "signalEventDefinition";
   public static final String ATTRIBUTE_SIGNAL_REF = "signalRef";
   public static final String ATTRIBUTE_SCOPE = "scope";

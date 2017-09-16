@@ -23,6 +23,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -43,8 +44,14 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
       messageDefinition.setMessageRef(message.getName());
       messageDefinition.setExtensionElements(message.getExtensionElements());
     }
-    
-    EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
+
+    // If MessageReferenceExpression is not blank use it - TURB-2283
+    String messageRefText = messageDefinition.getMessageRef();
+    if (!StringUtils.isBlank(messageDefinition.getMessageRefExpression())) {
+      messageRefText = messageDefinition.getMessageRefExpression();
+    }
+
+    EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageRefText, "message");
 
     ScopeImpl scope = bpmnParse.getCurrentScope();
     ActivityImpl activity = bpmnParse.getCurrentActivity();

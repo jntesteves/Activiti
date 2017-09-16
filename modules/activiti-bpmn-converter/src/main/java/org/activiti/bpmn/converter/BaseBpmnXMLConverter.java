@@ -503,6 +503,12 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
       }
     }
     writeDefaultAttribute(ATTRIBUTE_MESSAGE_REF, messageRef, xtw);
+
+    String messageRefExpression = messageDefinition.getMessageRefExpression();
+    if (StringUtils.isNotEmpty(messageRefExpression)) {
+      writeQualifiedAttribute(ATTRIBUTE_MESSAGE_REF_EXPRESSION, messageRefExpression, xtw);
+    }
+
     boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(messageDefinition, false, xtw);
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();

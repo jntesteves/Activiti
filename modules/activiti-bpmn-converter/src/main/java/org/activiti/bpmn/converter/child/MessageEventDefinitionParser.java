@@ -13,6 +13,10 @@
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stax.StAXSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
@@ -20,6 +24,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.apache.commons.lang3.StringUtils;
+
+import java.io.StringWriter;
 
 /**
  * @author Tijs Rademakers
@@ -32,13 +38,14 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof Event == false) return;
-    
+
     MessageEventDefinition eventDefinition = new MessageEventDefinition();
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
-    
+    eventDefinition.setMessageRefExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_REF_EXPRESSION));
+
     if(!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
-      
+
       int indexOfP = eventDefinition.getMessageRef().indexOf(':');
       if (indexOfP != -1) {
         String prefix = eventDefinition.getMessageRef().substring(0, indexOfP);
@@ -49,7 +56,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
       }
      
     }
-    
+
     BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);
     
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);

@@ -378,6 +378,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
           }
           propertiesNode.put(PROPERTY_MESSAGEREF, messageRef);
         }
+        if (StringUtils.isNotEmpty(messageDefinition.getMessageRefExpression())) {
+          String messageRefExpression = messageDefinition.getMessageRefExpression();
+          propertiesNode.put(PROPERTY_MESSAGEREFEXPRESSION, messageRefExpression);
+        }
         
       } else if (eventDefinition instanceof SignalEventDefinition) {
         SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
@@ -610,8 +614,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected void convertJsonToMessageDefinition(JsonNode objectNode, Event event) {
     String messageRef = getPropertyValueAsString(PROPERTY_MESSAGEREF, objectNode);
+    String messageRefExpression = getPropertyValueAsString(PROPERTY_MESSAGEREFEXPRESSION, objectNode);
     MessageEventDefinition eventDefinition = new MessageEventDefinition();
     eventDefinition.setMessageRef(messageRef);
+    eventDefinition.setMessageRefExpression(messageRefExpression);
     event.getEventDefinitions().add(eventDefinition);
   }
   

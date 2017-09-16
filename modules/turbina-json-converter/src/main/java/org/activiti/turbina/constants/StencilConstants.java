@@ -85,7 +85,8 @@ public interface StencilConstants {
 	final String PROPERTY_TIMER_CYCLE = "timercycledefinition";
 	
 	final String PROPERTY_MESSAGEREF = "messageref";
-	
+    final String PROPERTY_MESSAGEREFEXPRESSION = "messagerefexpression";
+
 	final String PROPERTY_SIGNALREF = "signalref";
 	
 	final String PROPERTY_ERRORREF = "errorref";

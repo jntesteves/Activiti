@@ -22,6 +22,7 @@ import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -81,7 +82,7 @@ public class FormPropertyHandler implements Serializable {
       throw new ActivitiException("form property '"+id+"' is not writable");
     }
     
-    if (isRequired && !properties.containsKey(id) && defaultExpression == null) {
+    if (isRequired && (!properties.containsKey(id) || StringUtils.isBlank(properties.get(id))) && defaultExpression == null) {
       throw new ActivitiException("form property '"+id+"' is required");
     }
     boolean propertyExits = false;
@@ -98,7 +99,7 @@ public class FormPropertyHandler implements Serializable {
       final Object expressionValue = defaultExpression.getValue(execution);
       if (type != null && expressionValue != null) {
         modelValue = type.convertFormValueToModelValue(expressionValue.toString());
-      } else if (expressionValue != null) {
+      } else if (expressionValue != null && !StringUtils.isBlank(expressionValue.toString())) {
         modelValue = expressionValue.toString();
       } else if (isRequired) {
         throw new ActivitiException("form property '"+id+"' is required");

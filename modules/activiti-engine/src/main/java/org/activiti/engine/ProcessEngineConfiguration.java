@@ -13,12 +13,7 @@
 
 package org.activiti.engine;
 
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.sql.DataSource;
-
+import com.amazonaws.services.s3.AmazonS3;
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
@@ -28,6 +23,11 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
+
+import javax.sql.DataSource;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /** Configuration information from which a process engine can be build.
@@ -81,6 +81,7 @@ import org.activiti.image.ProcessDiagramGenerator;
  * 
  * @see ProcessEngines 
  * @author Tom Baeyens
+ * @author Denis Giovan Marques
  */
 public abstract class ProcessEngineConfiguration implements EngineServices {
   
@@ -213,6 +214,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    */
   protected boolean useClassForNameClassLoading = true;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
+
+  /* Turbina S3 Object Storage for Attachments */
+  protected boolean s3AsAttachmentStorage;
+  protected String s3Bucket = "";
+
+  protected AmazonS3 s3Client;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -793,5 +800,29 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
     this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
     return this;
+  }
+
+  public boolean isS3AsAttachmentStorage() {
+    return s3AsAttachmentStorage;
+  }
+
+  public void setS3AsAttachmentStorage(boolean s3AsAttachmentStorage) {
+    this.s3AsAttachmentStorage = s3AsAttachmentStorage;
+  }
+
+  public String getS3Bucket() {
+    return s3Bucket;
+  }
+
+  public void setS3Bucket(String s3Bucket) {
+    this.s3Bucket = s3Bucket;
+  }
+
+  public AmazonS3 getS3Client() {
+    return s3Client;
+  }
+
+  public void setS3Client(AmazonS3 s3Client) {
+    this.s3Client = s3Client;
   }
 }
